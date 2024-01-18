@@ -1,0 +1,39 @@
+{
+  "${modID}:EventID": {
+    "NAME": "Event Name",
+    "DESCRIPTIONS": [
+      "This is event text, generally used to describe what's happening.",
+      "#g~This~ #g~text~ #g~is~ #g~green~ #g~and~ #g~wavy.~",
+      "#r@RED@ #r@AND@ #r@VIBRATING@ #r@TEXT.@",
+      "#rRed #gGreen #yYellow #bBlue #pPurple. ~Wavy~ @vibrating.@",
+      "You have to mark every word individually.",
+      "You can also use [#ffffff]white[] hex color codes like this to color text.",
+      "This also works in card text! But not on keywords."
+    ],
+    "OPTIONS": [
+      "[Action Description] What you actually get.",
+      "[Denial] #rLose #r1 #rMax #rHP. Bad stuff is red.",
+      "[Acceptance] #gGain #gApotheosis. Good stuff is green.",
+      "[Leave]",
+      "Select card to remove. (You can also stick extra text like this in here.)"
+    ]
+  },
+  "${modID}:MultiverseEvent": {
+    "NAME": "Multiverse(WIP)",
+    "DESCRIPTIONS": [
+      "You come to a door.",
+      "Through it you hear #gsounds #gof #ganother...",
+      "are they... calling out to you?",
+      "Through it you hear #bsounds #bof #banother.",
+      "Through it you hear #psounds #pof #panother.",
+      "This ^^^ is clearly a dumb way to do it, so reconsider this later Luke. lol"
+    ],
+    "OPTIONS": [
+      "Embrace the multiverse.",
+      "Back away slowly, but surely.",
+      "You choose to embrace the multiverse.",
+      "You leave the way you came.",
+      "I'll probably actually want story text, not the junk up above."
+    ]
+  }
+}

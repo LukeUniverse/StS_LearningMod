@@ -1,0 +1,21 @@
+{
+  "${modID}:OrbID": {
+    "NAME": "Orb Name",
+    "DESCRIPTION": [
+      "#yPassive: At the start of your turn, draw #b",
+      " card.",
+      " cards.",
+      " NL #yEvoke: Deal #b",
+      " damage to all enemies."
+    ]
+  },
+  "${modID}:Hellfire": {
+    "NAME": "Hellfire",
+    "DESCRIPTION": [
+      "At the start of your turn, gain",
+      "temporary Strength.",
+      " NL #yEvoke: Apply",
+      "Vulnerable to a random enemy."
+    ]
+  }
+}

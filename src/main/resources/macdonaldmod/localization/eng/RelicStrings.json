@@ -1,0 +1,33 @@
+{
+  "${modID}:RelicID": {
+    "NAME": "Good Relic",
+    "FLAVOR": "Flavor text displayed in detailed relic view.",
+    "DESCRIPTIONS": [
+      "Gain [E] at the start of your turn. [E] is an energy icon."
+    ]
+  },
+  "${modID}:HellfireBattery": {
+    "NAME": "Hellfire Battery",
+    "FLAVOR": "By god, what did they replace the plasma with?",
+    "DESCRIPTIONS": [
+      "If you have no orb slots, gain two orb slots. At the beginning of combat channel a #rHellfire"
+    ]
+  },
+  "${modID}:InfectiousMutagen": {
+    "NAME": "Infectious Mutagen",
+    "FLAVOR": "Gives 1 #yStrength, and applies 1 #gPoison per #yStrength on hit. Also Heals 1 at the end of combat for each non minion that died via #gPoison",
+    "DESCRIPTIONS": [
+      "Gives 1 #yStrength, and applies 1 #gPoison per #yStrength on hit.",
+      "Enemies killed by #gPoison this combat: #b"
+    ]
+  },
+  "${modID}:BloodRedLotus": {
+    "NAME": "Blood Lotus",
+    "FLAVOR": "A flower known to only bloom in fields where the #rbloodiest battles occurred.",
+    "DESCRIPTIONS": [
+      "Whenever you enter #yCalm, gain 1 #yDexterity and 1 #yWeak.",
+      "Whenever you enter #yWrath, gain 1 #yStrength and 1 #yFrail."
+    ]
+  }
+}
+

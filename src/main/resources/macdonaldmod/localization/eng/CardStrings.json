@@ -1,0 +1,30 @@
+{
+  "${modID}:ExampleCard": {
+    "NAME": "Name",
+    "DESCRIPTION": "Description.",
+    "UPGRADE_DESCRIPTION": "This will automatically be used if the card is upgraded. Remove it if unneeded.",
+    "EXTENDED_DESCRIPTION": [
+      "You can put more text in here.",
+      "If you need to use it for stuff.",
+      "Blizzard is a good example for this."
+    ]
+  },
+  "${modID}:Channel Hellfire": {
+    "NAME": "Channel Hellfire",
+    "DESCRIPTION": "Channel 1 Hellfire.",
+    "UPGRADE_DESCRIPTION": "N/A WIP",
+    "EXTENDED_DESCRIPTION": [
+      "Not needed"
+    ],
+    "FLAVOR": "Art clearly WIP."
+  },
+  "${modID}:Poisoned Strike": {
+    "NAME": "Poisoned Strike",
+    "DESCRIPTION": "Deal !D! damage. NL Apply !M! Poison.",
+    "UPGRADE_DESCRIPTION": "Deal !D! damage. NL Apply !M! Poison.",
+    "EXTENDED_DESCRIPTION": [
+      "Not needed"
+    ],
+    "FLAVOR": "Art clearly WIP."
+  }
+}
