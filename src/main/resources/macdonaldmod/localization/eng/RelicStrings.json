@@ -13,6 +13,13 @@
       "If you have no orb slots, gain two orb slots. At the beginning of combat channel a #rHellfire"
     ]
   },
+  "${modID}:NoxiousBattery": {
+    "NAME": "Noxious Battery",
+    "FLAVOR": "It glows with a sickly green hue",
+    "DESCRIPTIONS": [
+      "If you have no orb slots, gain two orb slots. At the beginning of combat channel a #gNoxious Orb"
+    ]
+  },
   "${modID}:InfectiousMutagen": {
     "NAME": "Infectious Mutagen",
     "FLAVOR": "Gives 1 #yStrength, and applies 1 #gPoison per #yStrength on hit. Also Heals 1 at the end of combat for each non minion that died via #gPoison",

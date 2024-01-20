@@ -17,5 +17,14 @@
       " NL #yEvoke: Apply",
       "Vulnerable to a random enemy."
     ]
+  },
+  "${modID}:Noxious": {
+    "NAME": "Noxious",
+    "DESCRIPTION": [
+      "Apply ",
+      " poison to a random enemy.",
+      " NL #yEvoke: Apply",
+      " Poison to a random enemy."
+    ]
   }
 }

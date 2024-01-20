@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.powers.PoisonPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.BurningBlood;
 import com.megacrit.cardcrawl.relics.RingOfTheSerpent;
+import com.megacrit.cardcrawl.relics.SnakeRing;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 
 import java.lang.reflect.Method;
@@ -83,7 +84,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
                 }
             }
         }
-        else if(AbstractDungeon.player.hasRelic(RingOfTheSerpent.ID))
+        else if(AbstractDungeon.player.hasRelic(SnakeRing.ID))
         {
             for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(RingOfTheSerpent.ID)) {

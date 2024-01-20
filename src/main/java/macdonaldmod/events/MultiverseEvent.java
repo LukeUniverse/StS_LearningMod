@@ -4,10 +4,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.blue.BallLightning;
 import com.megacrit.cardcrawl.cards.blue.Dualcast;
 import com.megacrit.cardcrawl.cards.blue.Recursion;
-import com.megacrit.cardcrawl.cards.green.BouncingFlask;
-import com.megacrit.cardcrawl.cards.green.Defend_Green;
-import com.megacrit.cardcrawl.cards.green.PoisonedStab;
-import com.megacrit.cardcrawl.cards.green.Survivor;
+import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.purple.Eruption;
 import com.megacrit.cardcrawl.cards.purple.Vigilance;
 import com.megacrit.cardcrawl.cards.red.Bash;
@@ -29,6 +26,7 @@ import macdonaldmod.cards.PoisonedStrike;
 import macdonaldmod.relics.BloodRedLotus;
 import macdonaldmod.relics.InfectionMutagen;
 import macdonaldmod.relics.HellfireBattery;
+import macdonaldmod.relics.NoxiousBattery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -239,18 +237,18 @@ public class MultiverseEvent extends AbstractImageEvent {
             //Julie do the thing!
             ResolveClassMerge(infectionRelic, cardIDsToRemove, cardsToAdd);
         } else if (twistState == TwistColor.BLUE) {
-//        //New Relic
-//        AbstractRelic hellFireRelic = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
-//        //Cards to remove
-//        List<String> cardIDsToRemove = new ArrayList<>();
-//        cardIDsToRemove.add(Bash.ID);
-//        cardIDsToRemove.add(Strike_Red.ID);
-//        //Cards to add
-//        List<AbstractCard> cardsToAdd = new ArrayList<>();
-//        cardsToAdd.add(new Recursion());
-//        cardsToAdd.add(new BallLightning());
+        //New Relic
+        AbstractRelic noxiousRelic = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
+        //Cards to remove
+        List<String> cardIDsToRemove = new ArrayList<>();
+        cardIDsToRemove.add(Defend_Green.ID);
+        cardIDsToRemove.add(Strike_Green.ID); //TODO, decide which cards to remove here
+        //Cards to add
+        List<AbstractCard> cardsToAdd = new ArrayList<>();
+        cardsToAdd.add(new Recursion());
+        cardsToAdd.add(new BallLightning());
 //        //Julie do the thing!
-//        ResolveClassMerge(hellFireRelic,cardIDsToRemove,cardsToAdd);
+        ResolveClassMerge(noxiousRelic,cardIDsToRemove,cardsToAdd);
         } else if (twistState == TwistColor.PURPLE) {
 //        //New Relic
 //        AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodRedLotus.ID).makeCopy();
