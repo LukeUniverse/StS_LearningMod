@@ -5,7 +5,9 @@ import com.megacrit.cardcrawl.cards.blue.BallLightning;
 import com.megacrit.cardcrawl.cards.blue.Dualcast;
 import com.megacrit.cardcrawl.cards.blue.Recursion;
 import com.megacrit.cardcrawl.cards.green.BouncingFlask;
+import com.megacrit.cardcrawl.cards.green.Defend_Green;
 import com.megacrit.cardcrawl.cards.green.PoisonedStab;
+import com.megacrit.cardcrawl.cards.green.Survivor;
 import com.megacrit.cardcrawl.cards.purple.Eruption;
 import com.megacrit.cardcrawl.cards.purple.Vigilance;
 import com.megacrit.cardcrawl.cards.red.Bash;
@@ -31,6 +33,7 @@ import macdonaldmod.relics.HellfireBattery;
 import java.util.ArrayList;
 import java.util.List;
 
+import static macdonaldmod.LearningMacMod.imagePath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 
@@ -52,6 +55,7 @@ public class MultiverseEvent extends AbstractImageEvent {
     }
 
     private enum TwistColor{
+        RED,
         GREEN,
         BLUE,
         PURPLE
@@ -61,13 +65,30 @@ public class MultiverseEvent extends AbstractImageEvent {
     public MultiverseEvent() {
         super("Multiverse(WIP)", DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[1] + " NL "+DESCRIPTIONS[2], "macdonaldmod/images/1024/events/MultiverseEvent.png");
 
-        int rand_int = AbstractDungeon.miscRng.random(0,2);
+
+        int current_int =-1;
+
+        if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+            current_int = 0;
+        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+            current_int = 1;
+        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+            current_int =2;
+            else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+            current_int =3;
+
+        int rand_int = current_int; //will this work in Java? Guess we'll find out.
+
+        while(rand_int == current_int)
+            rand_int = AbstractDungeon.miscRng.random(0,3);
 
         if(rand_int == 0)
+            twistState = TwistColor.RED;
+        else if(rand_int == 1)
             twistState = TwistColor.GREEN;
-        else if (rand_int == 1)
-            twistState = TwistColor.BLUE;
         else if (rand_int == 2)
+            twistState = TwistColor.BLUE;
+        else if (rand_int == 3)
             twistState = TwistColor.PURPLE;
 
         SetUp();
@@ -83,6 +104,8 @@ public class MultiverseEvent extends AbstractImageEvent {
             this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[3] + " NL "+DESCRIPTIONS[2]);
         } else if(twistState == TwistColor.PURPLE) {
             this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[4] + " NL "+DESCRIPTIONS[2]);
+        } else if (twistState == TwistColor.RED) { //This one got added late, may want to re-arrange strings. hah
+            this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[5] + " NL "+DESCRIPTIONS[2]);
         }
 
 
@@ -201,9 +224,47 @@ public class MultiverseEvent extends AbstractImageEvent {
         }
     }
 
-    private void SilentMerge()
-    {
-        //TODO
+    private void SilentMerge() {
+        if (twistState == TwistColor.RED) {
+            //New Relic
+            AbstractRelic infectionRelic = RelicLibrary.getRelic(InfectionMutagen.ID).makeCopy();
+            //Cards to remove
+            List<String> cardIDsToRemove = new ArrayList<>();
+            cardIDsToRemove.add(Defend_Green.ID);
+            cardIDsToRemove.add(Survivor.ID);
+            //Cards to add
+            List<AbstractCard> cardsToAdd = new ArrayList<>();
+            cardsToAdd.add(new Bash());
+            //cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
+            //Julie do the thing!
+            ResolveClassMerge(infectionRelic, cardIDsToRemove, cardsToAdd);
+        } else if (twistState == TwistColor.BLUE) {
+//        //New Relic
+//        AbstractRelic hellFireRelic = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
+//        //Cards to remove
+//        List<String> cardIDsToRemove = new ArrayList<>();
+//        cardIDsToRemove.add(Bash.ID);
+//        cardIDsToRemove.add(Strike_Red.ID);
+//        //Cards to add
+//        List<AbstractCard> cardsToAdd = new ArrayList<>();
+//        cardsToAdd.add(new Recursion());
+//        cardsToAdd.add(new BallLightning());
+//        //Julie do the thing!
+//        ResolveClassMerge(hellFireRelic,cardIDsToRemove,cardsToAdd);
+        } else if (twistState == TwistColor.PURPLE) {
+//        //New Relic
+//        AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodRedLotus.ID).makeCopy();
+//        //Cards to remove
+//        List<String> cardIDsToRemove = new ArrayList<>();
+//        cardIDsToRemove.add(Bash.ID);
+//        cardIDsToRemove.add(Defend_Red.ID);
+//        //Cards to add
+//        List<AbstractCard> cardsToAdd = new ArrayList<>();
+//        cardsToAdd.add(new Eruption());
+//        cardsToAdd.add(new Vigilance());
+//        //Julie do the thing!
+//        ResolveClassMerge(bloodRedLotus,cardIDsToRemove,cardsToAdd);
+        }
     }
 
     private void DefectMerge()

@@ -89,6 +89,8 @@ public class LearningMacMod implements
 
         //Add events here I think?
         BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.IRONCLAD).create());
+        ///uhhh try this?
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.THE_SILENT).create());
     }
 
     @Override

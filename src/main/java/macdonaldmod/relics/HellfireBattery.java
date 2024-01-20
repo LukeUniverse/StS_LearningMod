@@ -105,21 +105,17 @@ public class HellfireBattery extends BaseRelic implements CrossClassRelicInterfa
     public void ChangeLook() //PANTS! (and eyes)
     {
         try {
-            //I was having many issues with the damned reflection, hence all the loggers, but it's finally working for now! Woo.
-            if (AbstractDungeon.player != null) {
+            if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
 
-                logger.info("AbstractDungeon.player is not null.");
                 Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
                 loadAnimationMethod.setAccessible(true);
-
-                logger.info("loadAnimationMethod set up, about to run.");
                 loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-
-                logger.info("loadAnimation Method invoked^, beginning AnimationState.TrackEntry.");
                 AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-
-                logger.info("setting time scale now.");
                 e.setTimeScale(0.6F);
+            }
+            else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+            {
+                //Change Image for the DEFECT here eventually
             }
         } catch (Exception ex) {
             ex.printStackTrace();

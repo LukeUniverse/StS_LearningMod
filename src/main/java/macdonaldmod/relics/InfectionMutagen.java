@@ -6,6 +6,8 @@ import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.cards.green.*;
+import com.megacrit.cardcrawl.cards.red.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.EnergyManager;
@@ -15,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.powers.PoisonPower;
 import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.BurningBlood;
+import com.megacrit.cardcrawl.relics.RingOfTheSerpent;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 
 import java.lang.reflect.Method;
@@ -71,10 +74,19 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
     @Override
     public void obtain()
     {
-
+        //This logic should probably actually be in the event, not the relics but for now.... Oh well.
         if (AbstractDungeon.player.hasRelic(BurningBlood.ID)) {
             for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(BurningBlood.ID)) {
+                    instantObtain(AbstractDungeon.player, i, true);
+                    break;
+                }
+            }
+        }
+        else if(AbstractDungeon.player.hasRelic(RingOfTheSerpent.ID))
+        {
+            for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
+                if (AbstractDungeon.player.relics.get(i).relicId.equals(RingOfTheSerpent.ID)) {
                     instantObtain(AbstractDungeon.player, i, true);
                     break;
                 }
@@ -109,31 +121,25 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
     public void onEquip() {
 
         modifyCardPool();
-        ChangeLook(); //This seems like ultimately the most logical place for this. Check if I need to change any reloading stuff though.
+        ChangeLook(); //This seems like ultimately the most logical place for this. Check if I need to change any reloading stuff though?
     }
 
-    public void ChangeLook() //PANTS! (and eyes)
+    public void ChangeLook()
     {
         try {
             //I was having many issues with the damned reflection, hence all the loggers, but it's finally working for now! Woo.
-            if (AbstractDungeon.player != null) {
-
-                logger.info("AbstractDungeon.player is not null.");
+            if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
                 Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
                 loadAnimationMethod.setAccessible(true);
-
-                logger.info("loadAnimationMethod set up, about to run.");
                 loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-
-                logger.info("loadAnimation Method invoked^, beginning AnimationState.TrackEntry.");
                 AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-
-                logger.info("setting time scale now.");
                 e.setTimeScale(0.6F);
+            }
+            else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)){
+                //Change Silent Look here eventually
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-
         }
     }
 
@@ -142,28 +148,46 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
 
         ArrayList<AbstractCard> classCards = new ArrayList<>();
 
-        //I only want a SUBSET of the Green cards, not all of them, so here we go.
-        //Common
-        classCards.add(CardLibrary.getCard("Bane"));
-        classCards.add(CardLibrary.getCard("Deadly Poison"));
-        classCards.add(CardLibrary.getCard("Poisoned Stab"));
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
 
-        //I had only added this here as a test
-        //classCards.add((CardLibrary.getCard("macdonaldmod:Poisoned Strike")));
+            //Common
+            classCards.add(CardLibrary.getCard(Bane.ID));
+            classCards.add(CardLibrary.getCard(DeadlyPoison.ID));
+            classCards.add(CardLibrary.getCard(PoisonedStab.ID));
 
-        //Uncommon
-        classCards.add(CardLibrary.getCard("Bouncing Flask"));
-        classCards.add(CardLibrary.getCard("Catalyst"));
-        classCards.add(CardLibrary.getCard("Crippling Poison"));
-        classCards.add(CardLibrary.getCard("Noxious Fumes"));
+            //I had only added this here as a test
+            //classCards.add((CardLibrary.getCard("macdonaldmod:Poisoned Strike")));
 
-        //Rare
-        classCards.add(CardLibrary.getCard("Corpse Explosion"));
-        classCards.add(CardLibrary.getCard("Envenom"));
-        classCards.add(CardLibrary.getCard("Burst"));
+            //Uncommon
+            classCards.add(CardLibrary.getCard(BouncingFlask.ID));
+            classCards.add(CardLibrary.getCard(Catalyst.ID));
+            classCards.add(CardLibrary.getCard(CripplingPoison.ID));
+            classCards.add(CardLibrary.getCard(NoxiousFumes.ID));
+
+            //Rare
+            classCards.add(CardLibrary.getCard(CorpseExplosion.ID));
+            classCards.add(CardLibrary.getCard(Envenom.ID));
+            classCards.add(CardLibrary.getCard(Burst.ID));
+        }
+        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+        {
+            //Common
+            classCards.add(CardLibrary.getCard(Flex.ID));
+            classCards.add(CardLibrary.getCard(HeavyBlade.ID));
+            classCards.add(CardLibrary.getCard(TwinStrike.ID));
+
+            //Uncommon
+            classCards.add(CardLibrary.getCard(Inflame.ID));
+            classCards.add(CardLibrary.getCard(Pummel.ID));
+            classCards.add(CardLibrary.getCard(SpotWeakness.ID));
+
+            //Rare
+            classCards.add(CardLibrary.getCard(DemonForm.ID));
+            classCards.add(CardLibrary.getCard(DoubleTap.ID));
+            classCards.add(CardLibrary.getCard(LimitBreak.ID));
+        }
 
         mixCardpools(classCards);
-
     }
 
     protected void mixCardpools(ArrayList<AbstractCard> cardList) {
