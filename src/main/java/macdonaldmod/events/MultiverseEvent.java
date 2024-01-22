@@ -23,10 +23,7 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom.RoomPhase;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import macdonaldmod.LearningMacMod;
 import macdonaldmod.cards.PoisonedStrike;
-import macdonaldmod.relics.BloodRedLotus;
-import macdonaldmod.relics.InfectionMutagen;
-import macdonaldmod.relics.HellfireBattery;
-import macdonaldmod.relics.NoxiousBattery;
+import macdonaldmod.relics.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -249,19 +246,20 @@ public class MultiverseEvent extends AbstractImageEvent {
         cardsToAdd.add(new BallLightning());
 //        //Julie do the thing!
         ResolveClassMerge(noxiousRelic,cardIDsToRemove,cardsToAdd);
+
         } else if (twistState == TwistColor.PURPLE) {
-//        //New Relic
-//        AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodRedLotus.ID).makeCopy();
-//        //Cards to remove
-//        List<String> cardIDsToRemove = new ArrayList<>();
-//        cardIDsToRemove.add(Bash.ID);
-//        cardIDsToRemove.add(Defend_Red.ID);
-//        //Cards to add
-//        List<AbstractCard> cardsToAdd = new ArrayList<>();
-//        cardsToAdd.add(new Eruption());
-//        cardsToAdd.add(new Vigilance());
-//        //Julie do the thing!
-//        ResolveClassMerge(bloodRedLotus,cardIDsToRemove,cardsToAdd);
+        //New Relic
+        AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+        //Cards to remove
+        List<String> cardIDsToRemove = new ArrayList<>();
+        cardIDsToRemove.add(Strike_Green.ID);
+        cardIDsToRemove.add(Defend_Green.ID);
+        //Cards to add
+        List<AbstractCard> cardsToAdd = new ArrayList<>();
+        cardsToAdd.add(new Eruption());
+        cardsToAdd.add(new Vigilance());
+        //Julie do the thing!
+        ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
         }
     }
 
