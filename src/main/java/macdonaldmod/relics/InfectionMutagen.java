@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.red.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
-import com.megacrit.cardcrawl.core.EnergyManager;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
@@ -19,13 +18,12 @@ import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.BurningBlood;
 import com.megacrit.cardcrawl.relics.RingOfTheSerpent;
 import com.megacrit.cardcrawl.relics.SnakeRing;
-import com.megacrit.cardcrawl.screens.CharSelectInfo;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static basemod.BaseMod.logger;
-import static macdonaldmod.LearningMacMod.PantsPath;
+import static macdonaldmod.LearningMacMod.AlternateLookPath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterface {
@@ -125,23 +123,9 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
         ChangeLook(); //This seems like ultimately the most logical place for this. Check if I need to change any reloading stuff though?
     }
 
-    public void ChangeLook()
+    public void ChangeLook() //Since this is seemingly going to be the same for every relic... we should probably refactor and move this bit of code.
     {
-        try {
-            //I was having many issues with the damned reflection, hence all the loggers, but it's finally working for now! Woo.
-            if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
-                Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
-                loadAnimationMethod.setAccessible(true);
-                loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-                AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-                e.setTimeScale(0.6F);
-            }
-            else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)){
-                //Change Silent Look here eventually
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        macdonaldmod.LearningMacMod.GlobalChangeLook();
     }
 
     public void modifyCardPool() {

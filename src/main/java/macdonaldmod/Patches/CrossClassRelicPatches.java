@@ -1,22 +1,9 @@
 package macdonaldmod.Patches;
 
-import com.esotericsoftware.spine.AnimationState;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import macdonaldmod.relics.CrossClassRelicInterface;
-
-import java.lang.reflect.Method;
-
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
-
-
-
-
-import java.lang.reflect.Method;
-
-import static macdonaldmod.LearningMacMod.PantsPath;
 
 public class CrossClassRelicPatches {
 

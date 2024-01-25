@@ -4,6 +4,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.blue.BallLightning;
 import com.megacrit.cardcrawl.cards.blue.Dualcast;
 import com.megacrit.cardcrawl.cards.blue.Recursion;
+import com.megacrit.cardcrawl.cards.blue.Zap;
 import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.purple.Eruption;
 import com.megacrit.cardcrawl.cards.purple.Vigilance;
@@ -263,14 +264,88 @@ public class MultiverseEvent extends AbstractImageEvent {
         }
     }
 
-    private void DefectMerge()
+    private void DefectMerge() //Should I be swapping Duelcast for Recursion here? Or turning Zap into a "Channel 1 [custom] Orb" ?
     {
-        //TODO
+        if (twistState == TwistColor.RED) {
+            //New Relic
+            AbstractRelic hellfire = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
+            //Cards to remove
+            List<String> cardIDsToRemove = new ArrayList<>();
+            cardIDsToRemove.add(Zap.ID);
+            //Cards to add
+            List<AbstractCard> cardsToAdd = new ArrayList<>();
+            cardsToAdd.add(new Bash());
+            //cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
+            //Julie do the thing!
+            ResolveClassMerge(hellfire, cardIDsToRemove, cardsToAdd);
+        } else if (twistState == TwistColor.GREEN) {
+            //New Relic
+            AbstractRelic noxiousBattery = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
+            //Cards to remove
+            List<String> cardIDsToRemove = new ArrayList<>();
+            cardIDsToRemove.add(Zap.ID);
+            //Cards to add
+            List<AbstractCard> cardsToAdd = new ArrayList<>();
+            cardsToAdd.add(new DeadlyPoison());
+//        //Julie do the thing!
+            ResolveClassMerge(noxiousBattery,cardIDsToRemove,cardsToAdd);
+
+        } else if (twistState == TwistColor.PURPLE) {
+            //TODO does not exist yet, hah
+
+              //AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+//            //Cards to remove
+//            List<String> cardIDsToRemove = new ArrayList<>();
+//            cardIDsToRemove.add(Strike_Green.ID);
+//            cardIDsToRemove.add(Defend_Green.ID);
+//            //Cards to add
+//            List<AbstractCard> cardsToAdd = new ArrayList<>();
+//            cardsToAdd.add(new Eruption());
+//            cardsToAdd.add(new Vigilance());
+//            //Julie do the thing!
+//            ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
+        }
     }
 
     private void WatcherMerge()
     {
-        //TODO
+        if (twistState == TwistColor.RED) { //TODO does this even need deck changes?
+            //New Relic
+            AbstractRelic blood = RelicLibrary.getRelic(BloodRedLotus.ID).makeCopy();
+
+            //Cards to remove
+            List<String> cardIDsToRemove = new ArrayList<>();
+
+            //Cards to add
+            List<AbstractCard> cardsToAdd = new ArrayList<>();
+
+            //Julie do the thing!
+            ResolveClassMerge(blood, cardIDsToRemove, cardsToAdd);
+        } else if (twistState == TwistColor.GREEN) { //TODO does this even need deck changes?
+            //New Relic
+            AbstractRelic noxiousBattery = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
+
+            //Cards to remove
+            List<String> cardIDsToRemove = new ArrayList<>();
+
+            //Cards to add
+            List<AbstractCard> cardsToAdd = new ArrayList<>();
+
+            ResolveClassMerge(noxiousBattery,cardIDsToRemove,cardsToAdd);
+        } else if (twistState == TwistColor.BLUE) {
+            //TODO does not exist yet, hah
+            //AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+//            //Cards to remove
+//            List<String> cardIDsToRemove = new ArrayList<>();
+//            cardIDsToRemove.add(Strike_Green.ID);
+//            cardIDsToRemove.add(Defend_Green.ID);
+//            //Cards to add
+//            List<AbstractCard> cardsToAdd = new ArrayList<>();
+//            cardsToAdd.add(new Eruption());
+//            cardsToAdd.add(new Vigilance());
+//            //Julie do the thing!
+//            ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
+        }
     }
 
 }

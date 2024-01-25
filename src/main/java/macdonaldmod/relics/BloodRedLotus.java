@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.purple.*;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
@@ -16,7 +17,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static basemod.BaseMod.logger;
-import static macdonaldmod.LearningMacMod.PantsPath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 public class BloodRedLotus extends BaseRelic implements CrossClassRelicInterface {
@@ -96,29 +96,9 @@ public class BloodRedLotus extends BaseRelic implements CrossClassRelicInterface
     }
 
 
-    public void ChangeLook() //PANTS! (and eyes)
+    public void ChangeLook()
     {
-        try {
-            //I was having many issues with the damned reflection, hence all the loggers, but it's finally working for now! Woo.
-            if (AbstractDungeon.player != null) {
-
-                logger.info("AbstractDungeon.player is not null.");
-                Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
-                loadAnimationMethod.setAccessible(true);
-
-                logger.info("loadAnimationMethod set up, about to run.");
-                loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-
-                logger.info("loadAnimation Method invoked^, beginning AnimationState.TrackEntry.");
-                AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-
-                logger.info("setting time scale now.");
-                e.setTimeScale(0.6F);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
+        macdonaldmod.LearningMacMod.GlobalChangeLook();
     }
 
     //Hmmm I feel like I had to include A LOT of common and uncommon, but there are barely any relevant rares...
@@ -127,34 +107,40 @@ public class BloodRedLotus extends BaseRelic implements CrossClassRelicInterface
 
         ArrayList<AbstractCard> classCards = new ArrayList<>();
 
-        //I only want a SUBSET of the PURPLE cards, not all of them, so here we go.
-        //Common
-        classCards.add(CardLibrary.getCard(Crescendo.ID));
-        classCards.add(CardLibrary.getCard(EmptyBody.ID));
-        classCards.add(CardLibrary.getCard(EmptyFist.ID));
-        classCards.add(CardLibrary.getCard(FlurryOfBlows.ID));
-        classCards.add(CardLibrary.getCard(Tranquility.ID));
-        //Halt?
-
-        //Uncommon
-        classCards.add(CardLibrary.getCard(EmptyMind.ID));
-        classCards.add(CardLibrary.getCard(FearNoEvil.ID));
-        classCards.add(CardLibrary.getCard(Indignation.ID));
-        classCards.add(CardLibrary.getCard(InnerPeace.ID));
-        classCards.add(CardLibrary.getCard(LikeWater.ID));
-        classCards.add(CardLibrary.getCard(SimmeringFury.ID));
-        classCards.add(CardLibrary.getCard(Tantrum.ID));
-
-        //classCards.add(CardLibrary.getCard(MentalFortress.ID));
-        //classCards.add(CardLibrary.getCard(Rushdown.ID));
-        //fasting?
-        //foreign influence?
-
-        //Rare
-        classCards.add(CardLibrary.getCard(Blasphemy.ID));
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
 
 
-        mixCardpools(classCards);
+            //I only want a SUBSET of the PURPLE cards, not all of them, so here we go.
+            //Common
+            classCards.add(CardLibrary.getCard(Crescendo.ID));
+            classCards.add(CardLibrary.getCard(EmptyBody.ID));
+            classCards.add(CardLibrary.getCard(EmptyFist.ID));
+            classCards.add(CardLibrary.getCard(FlurryOfBlows.ID));
+            classCards.add(CardLibrary.getCard(Tranquility.ID));
+            //Halt?
+
+            //Uncommon
+            classCards.add(CardLibrary.getCard(EmptyMind.ID));
+            classCards.add(CardLibrary.getCard(FearNoEvil.ID));
+            classCards.add(CardLibrary.getCard(Indignation.ID));
+            classCards.add(CardLibrary.getCard(InnerPeace.ID));
+            classCards.add(CardLibrary.getCard(LikeWater.ID));
+            classCards.add(CardLibrary.getCard(SimmeringFury.ID));
+            classCards.add(CardLibrary.getCard(Tantrum.ID));
+
+            //classCards.add(CardLibrary.getCard(MentalFortress.ID));
+            //classCards.add(CardLibrary.getCard(Rushdown.ID));
+            //fasting?
+            //foreign influence?
+
+            //Rare
+            classCards.add(CardLibrary.getCard(Blasphemy.ID));
+        }
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER)) {
+            //add some cards here
+        }
+
+            mixCardpools(classCards);
 
     }
 

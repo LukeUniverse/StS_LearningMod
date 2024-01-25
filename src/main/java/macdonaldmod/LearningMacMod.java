@@ -5,7 +5,9 @@ import basemod.BaseMod;
 import basemod.eventUtil.AddEventParams;
 import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Color;
+import com.esotericsoftware.spine.AnimationState;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -30,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scannotation.AnnotationDB;
 
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -130,8 +133,25 @@ public class LearningMacMod implements
     public static final Map<String, KeywordInfo> keywords = new HashMap<>();
 
     //this probably shouldn't be here, hah.
-    public static String PantsPath(String file) {
+
+    public static void GlobalChangeLook()
+    {
+        try {
+            //I don't think this needs to be any different for any of the classes...
+            Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
+            loadAnimationMethod.setAccessible(true);
+            loadAnimationMethod.invoke(AbstractDungeon.player, AlternateLookPath("skeleton.atlas"), AlternateLookPath("skeleton.json"), 1.0F);
+            AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
+            e.setTimeScale(0.6F);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+        }
+    }
+    public static String AlternateLookPath(String fileName) {
         String rv = "images/characters/ironclad"; //Default location for default Ironclad look.
+        //TODO^^Make that the default string for what ever character you are current playing, lol
         /*
         user "Melt" from discord said:
         oh right should probably mention this
@@ -142,15 +162,41 @@ public class LearningMacMod implements
         if(AbstractDungeon.player != null) {
             for (AbstractRelic r : AbstractDungeon.player.relics) {
                 if (r instanceof CrossClassRelicInterface) {
-                    if(r.relicId.equals(InfectionMutagen.ID)) {
-                        rv = "macdonaldmod/images/characters/greenpants/" + file;
+                    if (r.relicId.equals(InfectionMutagen.ID)) {
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+                            rv = "macdonaldmod/images/characters/greenpants/" + fileName;
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+                            rv = "macdonaldmod/images/characters/Silent/Red/" + fileName;
                         break;
-                    } else if(r.relicId.equals(HellfireBattery.ID)) {
-                        rv = "macdonaldmod/images/characters/bluepants/" + file;
+
+                    } else if (r.relicId.equals(HellfireBattery.ID)) {
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+                            rv = "macdonaldmod/images/characters/bluepants/" + fileName;
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+                            rv = "macdonaldmod/images/characters/Defect/Red/" + fileName;
                         break;
-                    } else if(r.relicId.equals(BloodRedLotus.ID)) {
-                        rv = "macdonaldmod/images/characters/purplepants/" + file;
+                    } else if (r.relicId.equals(BloodRedLotus.ID)) {
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+                            rv = "macdonaldmod/images/characters/purplepants/" + fileName;
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+                            rv = "macdonaldmod/images/characters/???/" + fileName;
                         break;
+                    }
+                    else if (r.relicId.equals(NoxiousBattery.ID)) {
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+                            rv = "macdonaldmod/images/characters/Silent/Blue/" + fileName;
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+                            rv = "macdonaldmod/images/characters/Defect/Green/" + fileName;
+                        break;
+
+                    }
+                    else if (r.relicId.equals(LocketOfTheSnake.ID)) {
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+                            rv = "macdonaldmod/images/characters/Silent/Purple/" + fileName;
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+                            rv = "macdonaldmod/images/characters/???/" + fileName;
+                        break;
+
                     }
                 }
             }

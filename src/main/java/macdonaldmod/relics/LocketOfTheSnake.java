@@ -1,21 +1,26 @@
 package macdonaldmod.relics;
 
+import com.esotericsoftware.spine.AnimationState;
 import com.megacrit.cardcrawl.actions.common.MakeTempCardInHandAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.purple.*;
 import com.megacrit.cardcrawl.cards.tempCards.Miracle;
 import com.megacrit.cardcrawl.cards.tempCards.Shiv;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.SnakeRing;
 import com.megacrit.cardcrawl.stances.AbstractStance;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import static basemod.BaseMod.logger;
+import static macdonaldmod.LearningMacMod.AlternateLookPath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 public class LocketOfTheSnake extends BaseRelic implements CrossClassRelicInterface {
@@ -51,12 +56,11 @@ public class LocketOfTheSnake extends BaseRelic implements CrossClassRelicInterf
                 if (c.cardID.equals(Miracle.ID)) {
                     generateCard = false;
                 }
-                if(generateCard)
-                {
-                    this.flash();
-                    this.addToBot(new MakeTempCardInHandAction(new Miracle(), 1, false));
-
-                }
+            }
+            if(generateCard)
+            {
+                this.flash();
+                this.addToBot(new MakeTempCardInHandAction(new Miracle(), 1, false));
             }
         }else if (!prevStance.ID.equals(newStance.ID) && newStance.ID.equals("Wrath")) {
             this.flash();
@@ -121,26 +125,9 @@ public class LocketOfTheSnake extends BaseRelic implements CrossClassRelicInterf
         ChangeLook();
     }
 
-    public void ChangeLook() //PANTS! (and eyes)
+    public void ChangeLook()
     {
-        //TODO change Silent Appearance, lol
-//        try {
-//            if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
-//
-//                Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
-//                loadAnimationMethod.setAccessible(true);
-//                loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-//                AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-//                e.setTimeScale(0.6F);
-//            }
-//            else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-//            {
-//                //Change Image for the DEFECT here eventually
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//
-//        }
+        macdonaldmod.LearningMacMod.GlobalChangeLook();
     }
 
     public void modifyCardPool() {
@@ -150,37 +137,43 @@ public class LocketOfTheSnake extends BaseRelic implements CrossClassRelicInterf
         //kept it mostly the same as the BloodLotus relic list
         //but added a few cards focused around card creation.
 
-         //I only want a SUBSET of the PURPLE cards, not all of them, so here we go.
-        //Common
-        classCards.add(CardLibrary.getCard(Crescendo.ID));
-        classCards.add(CardLibrary.getCard(EmptyBody.ID));
-        classCards.add(CardLibrary.getCard(EmptyFist.ID));
-        classCards.add(CardLibrary.getCard(FlurryOfBlows.ID));
-        classCards.add(CardLibrary.getCard(Tranquility.ID));
-        //Halt?
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)) {
 
-        //Uncommon
-        classCards.add(CardLibrary.getCard(EmptyMind.ID));
-        classCards.add(CardLibrary.getCard(FearNoEvil.ID));
-        classCards.add(CardLibrary.getCard(Indignation.ID));
-        classCards.add(CardLibrary.getCard(InnerPeace.ID));
-        classCards.add(CardLibrary.getCard(LikeWater.ID));
-        classCards.add(CardLibrary.getCard(SimmeringFury.ID));
-        classCards.add(CardLibrary.getCard(Tantrum.ID));
+            //I only want a SUBSET of the PURPLE cards, not all of them, so here we go.
+            //Common
+            classCards.add(CardLibrary.getCard(Crescendo.ID));
+            classCards.add(CardLibrary.getCard(EmptyBody.ID));
+            classCards.add(CardLibrary.getCard(EmptyFist.ID));
+            classCards.add(CardLibrary.getCard(FlurryOfBlows.ID));
+            classCards.add(CardLibrary.getCard(Tranquility.ID));
+            //Halt?
 
-        classCards.add(CardLibrary.getCard(BattleHymn.ID));
-        classCards.add(CardLibrary.getCard(Study.ID));
-        //fasting?
-        //foreign influence?
+            //Uncommon
+            classCards.add(CardLibrary.getCard(EmptyMind.ID));
+            classCards.add(CardLibrary.getCard(FearNoEvil.ID));
+            classCards.add(CardLibrary.getCard(Indignation.ID));
+            classCards.add(CardLibrary.getCard(InnerPeace.ID));
+            classCards.add(CardLibrary.getCard(LikeWater.ID));
+            classCards.add(CardLibrary.getCard(SimmeringFury.ID));
+            classCards.add(CardLibrary.getCard(Tantrum.ID));
 
-        //Rare
-        classCards.add(CardLibrary.getCard(Blasphemy.ID));
-        classCards.add(CardLibrary.getCard(MasterReality.ID));
+            classCards.add(CardLibrary.getCard(BattleHymn.ID));
+            classCards.add(CardLibrary.getCard(Study.ID));
+            //fasting?
+            //foreign influence?
 
-        classCards.add(CardLibrary.getCard(SpiritShield.ID));
-        classCards.add(CardLibrary.getCard(ConjureBlade.ID));
+            //Rare
+            classCards.add(CardLibrary.getCard(Blasphemy.ID));
+            classCards.add(CardLibrary.getCard(MasterReality.ID));
 
-        mixCardpools(classCards);
+            classCards.add(CardLibrary.getCard(SpiritShield.ID));
+            classCards.add(CardLibrary.getCard(ConjureBlade.ID));
+        }
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER)) {
+            //add some cards here
+        }
+
+            mixCardpools(classCards);
 
     }
 

@@ -4,24 +4,21 @@ import com.esotericsoftware.spine.AnimationState;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.blue.*;
+import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
-import com.megacrit.cardcrawl.relics.BurningBlood;
-import com.megacrit.cardcrawl.relics.RingOfTheSerpent;
+import com.megacrit.cardcrawl.relics.CrackedCore;
 import com.megacrit.cardcrawl.relics.SnakeRing;
-import macdonaldmod.Orbs.HellfireOrb;
 import macdonaldmod.Orbs.NoxiousOrb;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static basemod.BaseMod.logger;
-import static macdonaldmod.LearningMacMod.PantsPath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterface {
@@ -83,9 +80,17 @@ public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterfac
     @Override
     public void obtain()
     {
+        //This logic should probably actually be in the event, not the relics but for now.... Oh well.
         if (AbstractDungeon.player.hasRelic(SnakeRing.ID)) {
             for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(SnakeRing.ID)) {
+                    instantObtain(AbstractDungeon.player, i, true);
+                    break;
+                }
+            }
+        }else if (AbstractDungeon.player.hasRelic(CrackedCore.ID)) {
+            for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
+                if (AbstractDungeon.player.relics.get(i).relicId.equals(CrackedCore.ID)) {
                     instantObtain(AbstractDungeon.player, i, true);
                     break;
                 }
@@ -105,58 +110,68 @@ public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterfac
         }
     }
 
-    public void ChangeLook() //PANTS! (and eyes)
+    public void ChangeLook()
     {
-        //TODO change Silent Appearance, lol
-//        try {
-//            if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
-//
-//                Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
-//                loadAnimationMethod.setAccessible(true);
-//                loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-//                AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-//                e.setTimeScale(0.6F);
-//            }
-//            else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-//            {
-//                //Change Image for the DEFECT here eventually
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//
-//        }
+        macdonaldmod.LearningMacMod.GlobalChangeLook();
     }
 
     public void modifyCardPool() {
         logger.info(ID +" acquired, modifying card pool.");
 
         ArrayList<AbstractCard> classCards = new ArrayList<>();
-        //TODO, I've for now made this the same exact subset that gets unlockeed for the Ironclad + the addition of Claw.
-        //TODO, I might want to change that down the line, but heck, this is just in testing right now.
 
-        //Common
-        classCards.add(CardLibrary.getCard(BallLightning.ID));
-        classCards.add(CardLibrary.getCard(Recursion.ID));
-        classCards.add(CardLibrary.getCard((Claw.ID)));
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)) {
 
-        //was just testing this
-        //classCards.add((CardLibrary.getCard("macdonaldmod:ChannelHellfire")));
+            //TODO, I've for now made this the same exact subset that gets unlockeed for the Ironclad + the addition of Claw.
+            //TODO, I might want to change that down the line, but heck, this is just in testing right now.
 
-        //Uncommon
-        classCards.add(CardLibrary.getCard(LockOn.ID));
-        classCards.add(CardLibrary.getCard(Capacitor.ID));
-        classCards.add(CardLibrary.getCard(Consume.ID));
-        classCards.add(CardLibrary.getCard(Defragment.ID));
-        classCards.add(CardLibrary.getCard(StaticDischarge.ID));
-        classCards.add(CardLibrary.getCard(Storm.ID));
-        classCards.add(CardLibrary.getCard(Tempest.ID));
+            //Common
+            classCards.add(CardLibrary.getCard(BallLightning.ID));
+            classCards.add(CardLibrary.getCard(Recursion.ID));
+            classCards.add(CardLibrary.getCard((Claw.ID)));
 
-        //Rare
-        classCards.add(CardLibrary.getCard(Electrodynamics.ID));
-        classCards.add(CardLibrary.getCard(MultiCast.ID));
-        classCards.add(CardLibrary.getCard(ThunderStrike.ID));
+            //was just testing this
+            //classCards.add((CardLibrary.getCard("macdonaldmod:ChannelHellfire")));
 
-        mixCardpools(classCards);
+            //Uncommon
+            classCards.add(CardLibrary.getCard(LockOn.ID));
+            classCards.add(CardLibrary.getCard(Capacitor.ID));
+            classCards.add(CardLibrary.getCard(Consume.ID));
+            classCards.add(CardLibrary.getCard(Defragment.ID));
+            classCards.add(CardLibrary.getCard(StaticDischarge.ID));
+            classCards.add(CardLibrary.getCard(Storm.ID));
+            classCards.add(CardLibrary.getCard(Tempest.ID));
+
+            //Rare
+            classCards.add(CardLibrary.getCard(Electrodynamics.ID));
+            classCards.add(CardLibrary.getCard(MultiCast.ID));
+            classCards.add(CardLibrary.getCard(ThunderStrike.ID));
+        }
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT)) {
+            //TODO, I've for now made this the same exact subset that gets unlockeed the infection mutagen
+            //change this later I assume.
+
+            //Common
+            classCards.add(CardLibrary.getCard(Bane.ID));
+            classCards.add(CardLibrary.getCard(DeadlyPoison.ID));
+            classCards.add(CardLibrary.getCard(PoisonedStab.ID));
+
+            //I had only added this here as a test
+            //classCards.add((CardLibrary.getCard("macdonaldmod:Poisoned Strike")));
+
+            //Uncommon
+            classCards.add(CardLibrary.getCard(BouncingFlask.ID));
+            classCards.add(CardLibrary.getCard(Catalyst.ID));
+            classCards.add(CardLibrary.getCard(CripplingPoison.ID));
+            classCards.add(CardLibrary.getCard(NoxiousFumes.ID));
+
+            //Rare
+            classCards.add(CardLibrary.getCard(CorpseExplosion.ID));
+            classCards.add(CardLibrary.getCard(Envenom.ID));
+            classCards.add(CardLibrary.getCard(Burst.ID));
+        }
+
+            mixCardpools(classCards);
 
     }
 

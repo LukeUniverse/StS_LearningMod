@@ -4,21 +4,21 @@ import com.esotericsoftware.spine.AnimationState;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.DamageInfo;
 import com.megacrit.cardcrawl.cards.blue.*;
+import com.megacrit.cardcrawl.cards.red.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.BurningBlood;
+import com.megacrit.cardcrawl.relics.CrackedCore;
 import macdonaldmod.Orbs.HellfireOrb;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static basemod.BaseMod.logger;
-import static macdonaldmod.LearningMacMod.PantsPath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 public class HellfireBattery extends BaseRelic implements CrossClassRelicInterface {
@@ -80,6 +80,7 @@ public class HellfireBattery extends BaseRelic implements CrossClassRelicInterfa
     @Override
     public void obtain()
     {
+        //This logic should probably actually be in the event, not the relics but for now.... Oh well.
         if (AbstractDungeon.player.hasRelic(BurningBlood.ID)) {
             for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(BurningBlood.ID)) {
@@ -87,7 +88,16 @@ public class HellfireBattery extends BaseRelic implements CrossClassRelicInterfa
                     break;
                 }
             }
-        } else {
+        }
+        else if(AbstractDungeon.player.hasRelic(CrackedCore.ID)) {
+            for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
+                if (AbstractDungeon.player.relics.get(i).relicId.equals(CrackedCore.ID)) {
+                    instantObtain(AbstractDungeon.player, i, true);
+                    break;
+                }
+            }
+        }
+        else {
             super.obtain();
         }
     }
@@ -102,25 +112,9 @@ public class HellfireBattery extends BaseRelic implements CrossClassRelicInterfa
         }
     }
 
-    public void ChangeLook() //PANTS! (and eyes)
+    public void ChangeLook()
     {
-        try {
-            if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
-
-                Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
-                loadAnimationMethod.setAccessible(true);
-                loadAnimationMethod.invoke(AbstractDungeon.player, PantsPath("skeleton.atlas"), PantsPath("skeleton.json"), 1.0F);
-                AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-                e.setTimeScale(0.6F);
-            }
-            else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-            {
-                //Change Image for the DEFECT here eventually
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
+        macdonaldmod.LearningMacMod.GlobalChangeLook();
     }
 
     public void modifyCardPool() {
@@ -128,29 +122,49 @@ public class HellfireBattery extends BaseRelic implements CrossClassRelicInterfa
 
         ArrayList<AbstractCard> classCards = new ArrayList<>();
 
-        //I only want a SUBSET of the Blue cards, not all of them, so here we go.
-        //Common
-        classCards.add(CardLibrary.getCard(BallLightning.ID));
-        classCards.add(CardLibrary.getCard(Recursion.ID));
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
 
-        //was just testing this
-        //classCards.add((CardLibrary.getCard("macdonaldmod:ChannelHellfire")));
+            //I only want a SUBSET of the Blue cards, not all of them, so here we go.
+            //Common
+            classCards.add(CardLibrary.getCard(BallLightning.ID));
+            classCards.add(CardLibrary.getCard(Recursion.ID));
 
-        //Uncommon
-        classCards.add(CardLibrary.getCard(LockOn.ID));
-        classCards.add(CardLibrary.getCard(Capacitor.ID));
-        classCards.add(CardLibrary.getCard(Consume.ID));
-        classCards.add(CardLibrary.getCard(Defragment.ID));
-        classCards.add(CardLibrary.getCard(StaticDischarge.ID));
-        classCards.add(CardLibrary.getCard(Storm.ID));
-        classCards.add(CardLibrary.getCard(Tempest.ID));
+            //was just testing this
+            //classCards.add((CardLibrary.getCard("macdonaldmod:ChannelHellfire")));
 
-        //Rare
-        classCards.add(CardLibrary.getCard(Electrodynamics.ID));
-        classCards.add(CardLibrary.getCard(MultiCast.ID));
-        classCards.add(CardLibrary.getCard(ThunderStrike.ID));
+            //Uncommon
+            classCards.add(CardLibrary.getCard(LockOn.ID));
+            classCards.add(CardLibrary.getCard(Capacitor.ID));
+            classCards.add(CardLibrary.getCard(Consume.ID));
+            classCards.add(CardLibrary.getCard(Defragment.ID));
+            classCards.add(CardLibrary.getCard(StaticDischarge.ID));
+            classCards.add(CardLibrary.getCard(Storm.ID));
+            classCards.add(CardLibrary.getCard(Tempest.ID));
 
-        mixCardpools(classCards);
+            //Rare
+            classCards.add(CardLibrary.getCard(Electrodynamics.ID));
+            classCards.add(CardLibrary.getCard(MultiCast.ID));
+            classCards.add(CardLibrary.getCard(ThunderStrike.ID));
+        }
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT)) {
+            //For now I just copied the card list for the Infection Mutagen, modify it more later to be more unique.
+
+            //Common
+            classCards.add(CardLibrary.getCard(Flex.ID));
+            classCards.add(CardLibrary.getCard(HeavyBlade.ID));
+            classCards.add(CardLibrary.getCard(TwinStrike.ID));
+
+            //Uncommon
+            classCards.add(CardLibrary.getCard(Inflame.ID));
+            classCards.add(CardLibrary.getCard(Pummel.ID));
+            classCards.add(CardLibrary.getCard(SpotWeakness.ID));
+
+            //Rare
+            classCards.add(CardLibrary.getCard(DemonForm.ID));
+            classCards.add(CardLibrary.getCard(DoubleTap.ID));
+            classCards.add(CardLibrary.getCard(LimitBreak.ID));
+        }
+            mixCardpools(classCards);
 
     }
 
