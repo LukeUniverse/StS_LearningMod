@@ -26,5 +26,23 @@
       " NL #yEvoke: Apply",
       " Poison to a random enemy."
     ]
+  },
+  "${modID}:Calm": {
+    "NAME": "Noxious",
+    "DESCRIPTION": [
+      "Apply ",
+      " poison to a random enemy.",
+      " NL #yEvoke: Apply",
+      " Poison to a random enemy."
+    ]
+  },
+  "${modID}:Wrath": {
+    "NAME": "Noxious",
+    "DESCRIPTION": [
+      "Apply ",
+      " poison to a random enemy.",
+      " NL #yEvoke: Apply",
+      " Poison to a random enemy."
+    ]
   }
 }

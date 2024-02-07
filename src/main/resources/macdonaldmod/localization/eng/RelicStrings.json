@@ -12,7 +12,13 @@
     "DESCRIPTIONS": [
       "If you have no orb slots, gain two orb slots. At the beginning of combat channel a #rHellfire"
     ]
-  },
+  },"${modID}:LotusBattery": {
+  "NAME": "Lotus Battery",
+  "FLAVOR": "Text?",
+  "DESCRIPTIONS": [
+    "Text here"
+  ]
+},
   "${modID}:LocketOfTheSnake": {
     "NAME": "Locket of the Snake",
     "FLAVOR": "Made from a fossilized snake, a rare variation carried by few huntresses.",

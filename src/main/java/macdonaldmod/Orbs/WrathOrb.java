@@ -4,50 +4,41 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.actions.animations.VFXAction;
-import com.megacrit.cardcrawl.actions.defect.LightningOrbEvokeAction;
-import com.megacrit.cardcrawl.actions.defect.LightningOrbPassiveAction;
-import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
-import com.megacrit.cardcrawl.vfx.combat.*;
-
-
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
+import com.megacrit.cardcrawl.powers.LoseStrengthPower;
+import com.megacrit.cardcrawl.powers.StrengthPower;
+import com.megacrit.cardcrawl.powers.VulnerablePower;
 import macdonaldmod.util.HellfireOrbPassiveEffect;
-import macdonaldmod.util.NoxiousOrbPassiveEffect;
 import macdonaldmod.util.TextureLoader;
-
-import java.nio.file.attribute.PosixFileAttributes;
 
 import static macdonaldmod.LearningMacMod.makeID;
 import static macdonaldmod.LearningMacMod.orbsPath;
 
-public class NoxiousOrb extends AbstractOrb {
+//Copied a lot of this code from, well, elsewhere. This is VERY MUCH a WIP.
 
+public class WrathOrb extends AbstractOrb{
     private float vfxTimer = 1.0f;
     private float vfxIntervalMin = 0.1f;
     private float vfxIntervalMax = 0.4f;
     private static final float ORB_WAVY_DIST = 0.04f;
     private static final float PI_4 = 12.566371f;
-    public static String NAME = "Noxious";
+    public static String NAME = "Wrath";
     public static final String ORB_ID = makeID(NAME);
     private static final OrbStrings orbString = CardCrawlGame.languagePack.getOrbString(ORB_ID);
-    public static com.badlogic.gdx.graphics.Color color = Color.GREEN.cpy();
-    public static com.badlogic.gdx.graphics.Color color2 = Color.YELLOW.cpy(); //TODO maybe different color, I don't know
+    public static Color color = Color.FIREBRICK.cpy();
+    public static Color color2 = Color.ORANGE.cpy();
 
-    public NoxiousOrb() {
+    public WrathOrb() {
         this.ID = ORB_ID;
-        img = TextureLoader.getTexture(orbsPath("NoxiousOrb.png"));
+        img = TextureLoader.getTexture(orbsPath("HellfireOrb.png"));
         this.name = NAME;
-        baseEvokeAmount = 5;
+        baseEvokeAmount = 1;
         this.basePassiveAmount = 2;
         this.passiveAmount = this.basePassiveAmount;
         this.updateDescription();
@@ -55,26 +46,30 @@ public class NoxiousOrb extends AbstractOrb {
         this.channelAnimTimer = 0.5F;
         scale = 1.5F;
 
+        //we want to trigger the orb when you first channel it as well
+        //which is what this is doing here
+        onStartOfTurn();
     }
+
 
     public void updateDescription() {
         this.applyFocus();
         this.description = orbString.DESCRIPTION[0]+" "+ this.passiveAmount+" " + orbString.DESCRIPTION[1] + orbString.DESCRIPTION[2] +" "+this.evokeAmount+" "+orbString.DESCRIPTION[3];
     }
 
-    public void onEndOfTurn() {
-        AbstractMonster randomMonster = AbstractDungeon.getMonsters().getRandomMonster((AbstractMonster)null, true, AbstractDungeon.cardRandomRng);
-        if (randomMonster != null) {
-            AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(randomMonster, AbstractDungeon.player, new PoisonPower(randomMonster, AbstractDungeon.player, passiveAmount)));
-        }
-    }
-
     public void onEvoke() {
 
         AbstractMonster randomMonster = AbstractDungeon.getMonsters().getRandomMonster((AbstractMonster)null, true, AbstractDungeon.cardRandomRng);
         if (randomMonster != null) {
-            AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(randomMonster, AbstractDungeon.player, new PoisonPower(randomMonster, AbstractDungeon.player, this.evokeAmount)));
+            AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(randomMonster, AbstractDungeon.player, new VulnerablePower(randomMonster, this.evokeAmount, false)));
         }
+    }
+
+    @Override
+    public void onStartOfTurn() {
+       // AbstractDungeon.actionManager.addToBottom(new VFXAction(new OrbFlareEffect(this, OrbFlareEffect.OrbFlareColor.PLASMA), 0.1f));
+        AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new StrengthPower(AbstractDungeon.player, this.passiveAmount), this.passiveAmount));
+        AbstractDungeon.actionManager.addToBottom(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new LoseStrengthPower(AbstractDungeon.player, this.passiveAmount), this.passiveAmount));
     }
 
     public void triggerEvokeAnimation() {
@@ -86,7 +81,7 @@ public class NoxiousOrb extends AbstractOrb {
         angle += Gdx.graphics.getDeltaTime() * 45.0f;
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (vfxTimer < 0.0f) {
-            AbstractDungeon.effectList.add(new NoxiousOrbPassiveEffect(cX, cY)); // TODO I've got to change this, obviously...
+            AbstractDungeon.effectList.add(new HellfireOrbPassiveEffect(cX, cY)); // This is the purple-sparkles in the orb. You can change this to whatever fits your orb.
             vfxTimer = MathUtils.random(vfxIntervalMin, vfxIntervalMax);
         }
 
@@ -109,6 +104,7 @@ public class NoxiousOrb extends AbstractOrb {
     }
 
     public AbstractOrb makeCopy() {
-        return new NoxiousOrb();
+        return new WrathOrb();
     }
+
 }
