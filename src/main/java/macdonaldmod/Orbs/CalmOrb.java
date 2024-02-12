@@ -4,43 +4,36 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.watcher.ChangeStanceAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.OrbStrings;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.powers.LoseStrengthPower;
-import com.megacrit.cardcrawl.powers.StrengthPower;
-import com.megacrit.cardcrawl.powers.VulnerablePower;
-import com.megacrit.cardcrawl.stances.AbstractStance;
-import com.megacrit.cardcrawl.stances.WrathStance;
 import macdonaldmod.cards.EvokeStanceOrb;
+import macdonaldmod.util.CalmOrbPassiveEffect;
 import macdonaldmod.util.HellfireOrbPassiveEffect;
 import macdonaldmod.util.TextureLoader;
-import macdonaldmod.util.WrathOrbPassiveEffect;
 
 import static macdonaldmod.LearningMacMod.*;
 
 //Copied a lot of this code from, well, elsewhere. This is VERY MUCH a WIP.
 
-public class WrathOrb extends AbstractOrb{
+public class CalmOrb extends AbstractOrb{
     private float vfxTimer = 1.0f;
     private float vfxIntervalMin = 0.1f;
     private float vfxIntervalMax = 0.4f;
     private static final float ORB_WAVY_DIST = 0.04f;
     private static final float PI_4 = 12.566371f;
-    public static String NAME = "Wrath";
+    public static String NAME = "Calm";
     public static final String ORB_ID = makeID(NAME);
     private static final OrbStrings orbString = CardCrawlGame.languagePack.getOrbString(ORB_ID);
-    public static Color color = Color.FIREBRICK.cpy();
-    public static Color color2 = Color.ORANGE.cpy();
+    public static Color color = Color.BLUE.cpy();
+    public static Color color2 = Color.CORAL.cpy();
 
-    public WrathOrb() {
+    public CalmOrb() {
         this.ID = ORB_ID;
-        img = TextureLoader.getTexture(orbsPath("Wrath.png"));
+        img = TextureLoader.getTexture(orbsPath("Calm.png"));
         this.name = NAME;
         baseEvokeAmount = 1;
         this.basePassiveAmount = 2;
@@ -62,8 +55,9 @@ public class WrathOrb extends AbstractOrb{
     }
 
     public void onEvoke() {
+
         ActuallyChangeStance = true;
-        AbstractDungeon.actionManager.addToBottom(new ChangeStanceAction("Wrath"));
+        AbstractDungeon.actionManager.addToBottom(new ChangeStanceAction("Calm"));
     }
 
     @Override
@@ -80,7 +74,7 @@ public class WrathOrb extends AbstractOrb{
         angle += Gdx.graphics.getDeltaTime() * 45.0f;
         vfxTimer -= Gdx.graphics.getDeltaTime();
         if (vfxTimer < 0.0f) {
-            AbstractDungeon.effectList.add(new WrathOrbPassiveEffect(cX, cY)); // This is the purple-sparkles in the orb. You can change this to whatever fits your orb.
+            AbstractDungeon.effectList.add(new CalmOrbPassiveEffect(cX, cY)); // This is the purple-sparkles in the orb. You can change this to whatever fits your orb.
             vfxTimer = MathUtils.random(vfxIntervalMin, vfxIntervalMax);
         }
 
@@ -103,7 +97,7 @@ public class WrathOrb extends AbstractOrb{
     }
 
     public AbstractOrb makeCopy() {
-        return new WrathOrb();
+        return new CalmOrb();
     }
 
 }

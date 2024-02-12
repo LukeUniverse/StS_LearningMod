@@ -1,12 +1,10 @@
 package macdonaldmod.events;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.blue.BallLightning;
-import com.megacrit.cardcrawl.cards.blue.Dualcast;
-import com.megacrit.cardcrawl.cards.blue.Recursion;
-import com.megacrit.cardcrawl.cards.blue.Zap;
+import com.megacrit.cardcrawl.cards.blue.*;
 import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.purple.Eruption;
+import com.megacrit.cardcrawl.cards.purple.FlurryOfBlows;
 import com.megacrit.cardcrawl.cards.purple.Vigilance;
 import com.megacrit.cardcrawl.cards.red.Bash;
 import com.megacrit.cardcrawl.cards.red.Defend_Red;
@@ -19,17 +17,16 @@ import com.megacrit.cardcrawl.events.AbstractImageEvent;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.localization.EventStrings;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.CrackedCore;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.rooms.AbstractRoom.RoomPhase;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import macdonaldmod.LearningMacMod;
-import macdonaldmod.cards.PoisonedStrike;
 import macdonaldmod.relics.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static macdonaldmod.LearningMacMod.imagePath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 
@@ -206,7 +203,7 @@ public class MultiverseEvent extends AbstractImageEvent {
         }
         else if(twistState == TwistColor.PURPLE) {
             //New Relic
-            AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodRedLotus.ID).makeCopy();
+            AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
             //Cards to remove
             List<String> cardIDsToRemove = new ArrayList<>();
             cardIDsToRemove.add(Bash.ID);
@@ -293,17 +290,19 @@ public class MultiverseEvent extends AbstractImageEvent {
         } else if (twistState == TwistColor.PURPLE) {
             //TODO does not exist yet, hah
 
-              //AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
-//            //Cards to remove
-//            List<String> cardIDsToRemove = new ArrayList<>();
-//            cardIDsToRemove.add(Strike_Green.ID);
-//            cardIDsToRemove.add(Defend_Green.ID);
-//            //Cards to add
-//            List<AbstractCard> cardsToAdd = new ArrayList<>();
-//            cardsToAdd.add(new Eruption());
-//            cardsToAdd.add(new Vigilance());
-//            //Julie do the thing!
-//            ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
+              AbstractRelic locket = RelicLibrary.getRelic(CrackedCore.ID).makeCopy();
+            //Cards to remove
+            List<String> cardIDsToRemove = new ArrayList<>();
+            cardIDsToRemove.add(Strike_Blue.ID);
+            cardIDsToRemove.add(Defend_Blue.ID);
+            cardIDsToRemove.add(Zap.ID);
+            //Cards to add
+            List<AbstractCard> cardsToAdd = new ArrayList<>();
+            cardsToAdd.add(new Eruption());
+            cardsToAdd.add(new Vigilance());
+            cardsToAdd.add(new FlurryOfBlows());
+            //Julie do the thing!
+            ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
         }
     }
 
@@ -311,7 +310,7 @@ public class MultiverseEvent extends AbstractImageEvent {
     {
         if (twistState == TwistColor.RED) { //TODO does this even need deck changes?
             //New Relic
-            AbstractRelic blood = RelicLibrary.getRelic(BloodRedLotus.ID).makeCopy();
+            AbstractRelic blood = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
 
             //Cards to remove
             List<String> cardIDsToRemove = new ArrayList<>();

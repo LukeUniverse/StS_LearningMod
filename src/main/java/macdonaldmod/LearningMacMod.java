@@ -133,7 +133,6 @@ public class LearningMacMod implements
     public static final Map<String, KeywordInfo> keywords = new HashMap<>();
 
     //this probably shouldn't be here, hah.
-
     public static void GlobalChangeLook()
     {
         try {
@@ -149,6 +148,9 @@ public class LearningMacMod implements
 
         }
     }
+
+    public static boolean ActuallyChangeStance = false;
+
     public static String AlternateLookPath(String fileName) {
         String rv = "images/characters/ironclad"; //Default location for default Ironclad look.
         //TODO^^Make that the default string for what ever character you are current playing, lol
@@ -175,7 +177,7 @@ public class LearningMacMod implements
                         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
                             rv = "macdonaldmod/images/characters/Defect/Red/" + fileName;
                         break;
-                    } else if (r.relicId.equals(BloodRedLotus.ID)) {
+                    } else if (r.relicId.equals(BloodLotus.ID)) {
                         if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
                             rv = "macdonaldmod/images/characters/purplepants/" + fileName;
                         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
@@ -196,7 +198,13 @@ public class LearningMacMod implements
                         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
                             rv = "macdonaldmod/images/characters/???/" + fileName;
                         break;
-
+                    }
+                    else if (r.relicId.equals(StanceChip.ID)) {
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+                            rv = "macdonaldmod/images/characters/Defect/Purple/" + fileName;
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+                            rv = "macdonaldmod/images/characters/???/" + fileName;
+                        break;
                     }
                 }
             }

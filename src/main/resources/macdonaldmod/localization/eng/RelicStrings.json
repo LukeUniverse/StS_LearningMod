@@ -12,11 +12,11 @@
     "DESCRIPTIONS": [
       "If you have no orb slots, gain two orb slots. At the beginning of combat channel a #rHellfire"
     ]
-  },"${modID}:LotusBattery": {
-  "NAME": "Lotus Battery",
-  "FLAVOR": "Text?",
+  },"${modID}:StanceChip": {
+  "NAME": "Stance Chip",
+  "FLAVOR": "A data chip containing vast amounts of research into an obscure sect of monks.",
   "DESCRIPTIONS": [
-    "Text here"
+    "When you would enter a stance, instead channel an orb that when evoked puts you into that stance (WIP)"
   ]
 },
   "${modID}:LocketOfTheSnake": {
@@ -42,7 +42,7 @@
       "Enemies killed by #gPoison this combat: #b"
     ]
   },
-  "${modID}:BloodRedLotus": {
+  "${modID}:BloodLotus": {
     "NAME": "Blood Lotus",
     "FLAVOR": "A flower known to only bloom in fields where the #rbloodiest battles occurred.",
     "DESCRIPTIONS": [

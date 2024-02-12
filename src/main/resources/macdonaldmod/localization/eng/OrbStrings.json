@@ -28,21 +28,21 @@
     ]
   },
   "${modID}:Calm": {
-    "NAME": "Noxious",
+    "NAME": "Calm",
     "DESCRIPTION": [
-      "Apply ",
-      " poison to a random enemy.",
-      " NL #yEvoke: Apply",
-      " Poison to a random enemy."
+      "When evoked, enter Calm. ",
+      "Also adds an Evoke Stance to hand.",
+      "WIP",
+      "WIP"
     ]
   },
   "${modID}:Wrath": {
-    "NAME": "Noxious",
+    "NAME": "Wrath",
     "DESCRIPTION": [
-      "Apply ",
-      " poison to a random enemy.",
-      " NL #yEvoke: Apply",
-      " Poison to a random enemy."
+      "When evoked, enter wrath.",
+      "Also adds an Evoke Stance to hand.",
+      "WIP",
+      "WIP"
     ]
   }
 }
