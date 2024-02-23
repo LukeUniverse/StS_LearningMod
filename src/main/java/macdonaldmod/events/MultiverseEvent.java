@@ -32,7 +32,6 @@ import static macdonaldmod.LearningMacMod.makeID;
 
 public class MultiverseEvent extends AbstractImageEvent {
 
-    //TODO: The leave button isn't working x.x (did I ever fix this?)
 
     public static final String NAME = "MultiverseEvent";
     public static final String ID = makeID("MultiverseEvent");
@@ -65,9 +64,9 @@ public class MultiverseEvent extends AbstractImageEvent {
             current_int = 0;
         else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
             current_int = 1;
-        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
             current_int =2;
-            else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
             current_int =3;
 
         int rand_int = current_int; //will this work in Java? Guess we'll find out.
@@ -103,8 +102,6 @@ public class MultiverseEvent extends AbstractImageEvent {
 
 
         this.state = State.HERE;
-        LearningMacMod.logger.warn("Multiverse event spawn");
-
         //This is where you would create your dialog options
         this.imageEventText.setDialogOption(OPTIONS[0]); //This adds the option to a list of options
         this.imageEventText.setDialogOption(OPTIONS[1]); //This adds the option to a list of options
@@ -131,7 +128,7 @@ public class MultiverseEvent extends AbstractImageEvent {
             case HERE: {
                 switch (buttonPressed) {
                     case 0:
-                        //I want to eventually make this option only selectable if you have Bash, a strike left, and burning blood.
+                        //I want to eventually make this option only selectable if ...
                         //well, only selectable if X, Y, and Z are present depending on your class.
                         imageEventText.updateBodyText(OPTIONS[2]);
                         AbstractDungeon.getCurrRoom().phase = AbstractRoom.RoomPhase.COMPLETE;
@@ -139,18 +136,17 @@ public class MultiverseEvent extends AbstractImageEvent {
                         if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
                             IroncladMerge();
                         else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
-                            SilentMerge(); // Event spawning for the IronClad..., so this should never be hit for now.
+                            SilentMerge();
                         else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-                            DefectMerge(); //see above
+                            DefectMerge();
                         else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            WatcherMerge(); //see above
-                        else  //see above
+                            WatcherMerge();
+                        else
                             break;
                         break;
                     case 1:
                         imageEventText.updateBodyText(OPTIONS[3]);
                         AbstractDungeon.getCurrRoom().phase = AbstractRoom.RoomPhase.COMPLETE;
-                        //Double down here...
                         this.imageEventText.clearAllDialogs();
                         break;
 

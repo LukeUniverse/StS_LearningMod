@@ -12,6 +12,7 @@ import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.relics.PureWater;
 import com.megacrit.cardcrawl.relics.SnakeRing;
 import com.megacrit.cardcrawl.stances.AbstractStance;
 
@@ -109,6 +110,13 @@ public class LocketOfTheSnake extends BaseRelic implements CrossClassRelicInterf
         if (AbstractDungeon.player.hasRelic(SnakeRing.ID)) {
             for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(SnakeRing.ID)) {
+                    instantObtain(AbstractDungeon.player, i, true);
+                    break;
+                }
+            }
+        } else if (AbstractDungeon.player.hasRelic(PureWater.ID)) {
+            for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
+                if (AbstractDungeon.player.relics.get(i).relicId.equals(PureWater.ID)) {
                     instantObtain(AbstractDungeon.player, i, true);
                     break;
                 }

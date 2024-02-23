@@ -9,6 +9,8 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.BurningBlood;
+import com.megacrit.cardcrawl.relics.HolyWater;
+import com.megacrit.cardcrawl.relics.PureWater;
 import com.megacrit.cardcrawl.stances.AbstractStance;
 
 import java.util.ArrayList;
@@ -51,18 +53,25 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
     }
 
     @Override
-    public void obtain()
-    {
+    public void obtain() {
         if (AbstractDungeon.player.hasRelic(BurningBlood.ID)) {
-            for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
+            for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(BurningBlood.ID)) {
                     instantObtain(AbstractDungeon.player, i, true);
                     break;
                 }
             }
-        } else {
+
+        } else if (AbstractDungeon.player.hasRelic(PureWater.ID)) {
+            for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
+                if (AbstractDungeon.player.relics.get(i).relicId.equals(PureWater.ID)) {
+                    instantObtain(AbstractDungeon.player, i, true);
+                    break;
+                }
+            }
+        } else
             super.obtain();
-        }
+
     }
 
     public String getUpdatedDescription() {

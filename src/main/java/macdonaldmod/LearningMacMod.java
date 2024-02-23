@@ -90,10 +90,11 @@ public class LearningMacMod implements
         //The information used is taken from your pom.xml file.
         BaseMod.registerModBadge(badgeTexture, info.Name, GeneralUtils.arrToString(info.Authors), info.Description, null);
 
-        //Add events here I think?
+        //Seems funky, but I think the bast way to handle this is just creating an instance of my event for each class...
         BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.IRONCLAD).create());
-        ///uhhh try this?
         BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.THE_SILENT).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.DEFECT).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.WATCHER).create());
     }
 
     @Override
@@ -143,6 +144,7 @@ public class LearningMacMod implements
             AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
             e.setTimeScale(0.6F);
 
+            // loadEyeAnimation for the watcher???;
         } catch (Exception ex) {
             ex.printStackTrace();
 
@@ -181,7 +183,7 @@ public class LearningMacMod implements
                         if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
                             rv = "macdonaldmod/images/characters/purplepants/" + fileName;
                         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            rv = "macdonaldmod/images/characters/???/" + fileName;
+                            rv = "macdonaldmod/images/characters/Watcher/Red/" + fileName;
                         break;
                     }
                     else if (r.relicId.equals(NoxiousBattery.ID)) {
@@ -196,14 +198,14 @@ public class LearningMacMod implements
                         if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
                             rv = "macdonaldmod/images/characters/Silent/Purple/" + fileName;
                         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            rv = "macdonaldmod/images/characters/???/" + fileName;
+                            rv = "macdonaldmod/images/characters/Watcher/Green/" + fileName;
                         break;
                     }
                     else if (r.relicId.equals(StanceChip.ID)) {
                         if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
                             rv = "macdonaldmod/images/characters/Defect/Purple/" + fileName;
                         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            rv = "macdonaldmod/images/characters/???/" + fileName;
+                            rv = "macdonaldmod/images/characters/Watcher/Blue/" + fileName;
                         break;
                     }
                 }
