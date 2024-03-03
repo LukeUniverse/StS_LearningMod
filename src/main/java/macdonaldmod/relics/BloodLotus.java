@@ -9,9 +9,9 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.BurningBlood;
-import com.megacrit.cardcrawl.relics.HolyWater;
 import com.megacrit.cardcrawl.relics.PureWater;
 import com.megacrit.cardcrawl.stances.AbstractStance;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 
 import java.util.ArrayList;
 
@@ -38,7 +38,7 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
             this.flash();
             this.addToTop(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new DexterityPower(AbstractDungeon.player, 1), 1));
             this.addToTop(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new WeakPower(AbstractDungeon.player, 1, false), 1));
-        }else if (!prevStance.ID.equals(newStance.ID) && newStance.ID.equals("Wrath")) {
+        } else if (!prevStance.ID.equals(newStance.ID) && newStance.ID.equals("Wrath")) {
             this.flash();
             this.addToTop(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new StrengthPower(AbstractDungeon.player, 1), 1));
             this.addToTop(new ApplyPowerAction(AbstractDungeon.player, AbstractDungeon.player, new FrailPower(AbstractDungeon.player, 1, false), 1));
@@ -75,24 +75,18 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
     }
 
     public String getUpdatedDescription() {
-        return this.DESCRIPTIONS[0] +" NL " + DESCRIPTIONS[1];
+        return this.DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[1];
     }
 
 
     public void update() {
         super.update();
-        //I might actually want to impliment this if I do healing on stance change
+        //I might actually want to implement this if I do healing on stance change
         //this.counter = 0;
         getUpdatedDescription();
         //refreshTips();
     }
 
-    //this is needed to actually update the tool tips if I do something with the counter
-    public void refreshTips() {
-        //this.tips.clear();
-        //this.tips.add(new PowerTip(this.name, this.DESCRIPTIONS[0] +" NL " + DESCRIPTIONS[1] + this.counter));
-        //this.initializeTips();
-    }
 
     // Skill book Region
     @Override
@@ -102,12 +96,11 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
     }
 
 
-    public void ChangeLook()
-    {
-        macdonaldmod.LearningMacMod.GlobalChangeLook();
+    public void ChangeLook() {
+        CrossCharacterRelicUtility.GlobalChangeLook();
     }
 
-    //Hmmm I feel like I had to include A LOT of common and uncommon, but there are barely any relevant rares...
+    //I feel like I had to include A LOT of common and uncommon, but there are barely any relevant rares...
     public void modifyCardPool() {
         logger.info("BloodRedLotus acquired, modifying card pool.");
 
@@ -141,48 +134,12 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
 
             //Rare
             classCards.add(CardLibrary.getCard(Blasphemy.ID));
-        }
-        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER)) {
+        } else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER)) {
             //add some cards here
         }
 
-            mixCardpools(classCards);
+        CrossCharacterRelicUtility.ModifyCardPool(classCards);
 
     }
 
-    protected void mixCardpools(ArrayList<AbstractCard> cardList) {
-        for (AbstractCard c : cardList) {
-            if(c.rarity != AbstractCard.CardRarity.BASIC) {
-                switch (c.rarity) {
-                    case COMMON: {
-                        AbstractDungeon.commonCardPool.removeCard(c);
-                        AbstractDungeon.srcCommonCardPool.removeCard(c);
-                        AbstractDungeon.commonCardPool.addToTop(c);
-                        AbstractDungeon.srcCommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case UNCOMMON: {
-                        AbstractDungeon.uncommonCardPool.removeCard(c);
-                        AbstractDungeon.srcUncommonCardPool.removeCard(c);
-                        AbstractDungeon.uncommonCardPool.addToTop(c);
-                        AbstractDungeon.srcUncommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case RARE: {
-                        AbstractDungeon.rareCardPool.removeCard(c);
-                        AbstractDungeon.srcRareCardPool.removeCard(c);
-                        AbstractDungeon.rareCardPool.addToTop(c);
-                        AbstractDungeon.srcRareCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case CURSE: {
-                        AbstractDungeon.curseCardPool.removeCard(c);
-                        AbstractDungeon.srcCurseCardPool.removeCard(c);
-                        AbstractDungeon.curseCardPool.addToTop(c);
-                        AbstractDungeon.srcCurseCardPool.addToBottom(c);
-                    }
-                }
-            }
-        }
-    }
 }

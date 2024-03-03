@@ -12,5 +12,16 @@
       "This": "Contains pairs of Strings, used to get values based on keys.",
       "This is a key": "This is a value."
     }
+  },
+  "${ModID}:ConfigMenuText": {
+    "TEXT": [
+      "Macdonald's Learning Mod",
+      "Luke Macdonald",
+      "My first attempt at a mod, made mostly for the learning experience.",
+      "Override Ironclad's start:",
+      "Override Silent's start:",
+      "Override Defect's start:",
+      "Override Watcher's start:"
+    ]
   }
 }

@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.CrackedCore;
 import com.megacrit.cardcrawl.relics.PureWater;
 import com.megacrit.cardcrawl.stances.AbstractStance;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 
 import java.util.ArrayList;
 
@@ -66,7 +67,6 @@ public class StanceChip extends BaseRelic implements CrossClassRelicInterface {
     @Override
     public void obtain()
     {
-        //This logic should probably actually be in the event, not the relics but for now.... Oh well.
         if (AbstractDungeon.player.hasRelic(PureWater.ID)) {
             for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(PureWater.ID)) {
@@ -100,7 +100,7 @@ public class StanceChip extends BaseRelic implements CrossClassRelicInterface {
 
     public void ChangeLook()
     {
-        macdonaldmod.LearningMacMod.GlobalChangeLook();
+        CrossCharacterRelicUtility.GlobalChangeLook();
     }
 
     public void modifyCardPool() {
@@ -133,7 +133,7 @@ public class StanceChip extends BaseRelic implements CrossClassRelicInterface {
             classCards.add(CardLibrary.getCard(ThunderStrike.ID));
         }
         else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT)) {
-            //For now I just copied the card list for the Blood Lotus, modify it more later to be more unique.
+            //For now, I just copied the card list for the Blood Lotus, modify it more later to be more unique.
 
             //Common
             classCards.add(CardLibrary.getCard(Crescendo.ID));
@@ -160,43 +160,9 @@ public class StanceChip extends BaseRelic implements CrossClassRelicInterface {
             //Rare
             classCards.add(CardLibrary.getCard(Blasphemy.ID));
         }
-        mixCardpools(classCards);
+
+        CrossCharacterRelicUtility.ModifyCardPool(classCards);
 
     }
 
-    protected void mixCardpools(ArrayList<AbstractCard> cardList) {
-        for (AbstractCard c : cardList) {
-            if(c.rarity != AbstractCard.CardRarity.BASIC) {
-                switch (c.rarity) {
-                    case COMMON: {
-                        AbstractDungeon.commonCardPool.removeCard(c);
-                        AbstractDungeon.srcCommonCardPool.removeCard(c);
-                        AbstractDungeon.commonCardPool.addToTop(c);
-                        AbstractDungeon.srcCommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case UNCOMMON: {
-                        AbstractDungeon.uncommonCardPool.removeCard(c);
-                        AbstractDungeon.srcUncommonCardPool.removeCard(c);
-                        AbstractDungeon.uncommonCardPool.addToTop(c);
-                        AbstractDungeon.srcUncommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case RARE: {
-                        AbstractDungeon.rareCardPool.removeCard(c);
-                        AbstractDungeon.srcRareCardPool.removeCard(c);
-                        AbstractDungeon.rareCardPool.addToTop(c);
-                        AbstractDungeon.srcRareCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case CURSE: {
-                        AbstractDungeon.curseCardPool.removeCard(c);
-                        AbstractDungeon.srcCurseCardPool.removeCard(c);
-                        AbstractDungeon.curseCardPool.addToTop(c);
-                        AbstractDungeon.srcCurseCardPool.addToBottom(c);
-                    }
-                }
-            }
-        }
-    }
 }

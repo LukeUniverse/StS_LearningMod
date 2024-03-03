@@ -4,21 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.watcher.ChangeStanceAction;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.localization.OrbStrings;
-import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
-import com.megacrit.cardcrawl.powers.LoseStrengthPower;
-import com.megacrit.cardcrawl.powers.StrengthPower;
-import com.megacrit.cardcrawl.powers.VulnerablePower;
-import com.megacrit.cardcrawl.stances.AbstractStance;
-import com.megacrit.cardcrawl.stances.WrathStance;
 import macdonaldmod.cards.EvokeStanceOrb;
-import macdonaldmod.util.HellfireOrbPassiveEffect;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 import macdonaldmod.util.TextureLoader;
 import macdonaldmod.util.WrathOrbPassiveEffect;
 
@@ -62,7 +55,8 @@ public class WrathOrb extends AbstractOrb{
     }
 
     public void onEvoke() {
-        ActuallyChangeStance = true;
+
+        CrossCharacterRelicUtility.ActuallyChangeStance = true;
         AbstractDungeon.actionManager.addToBottom(new ChangeStanceAction("Wrath"));
     }
 

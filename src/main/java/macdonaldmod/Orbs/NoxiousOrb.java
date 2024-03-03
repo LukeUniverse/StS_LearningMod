@@ -4,28 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.actions.animations.VFXAction;
-import com.megacrit.cardcrawl.actions.defect.LightningOrbEvokeAction;
-import com.megacrit.cardcrawl.actions.defect.LightningOrbPassiveAction;
-import com.megacrit.cardcrawl.cards.DamageInfo;
+
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import com.megacrit.cardcrawl.powers.*;
-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
-import com.megacrit.cardcrawl.vfx.combat.*;
-
-
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
-import macdonaldmod.util.HellfireOrbPassiveEffect;
+
 import macdonaldmod.util.NoxiousOrbPassiveEffect;
 import macdonaldmod.util.TextureLoader;
 
-import java.nio.file.attribute.PosixFileAttributes;
 
 import static macdonaldmod.LearningMacMod.makeID;
 import static macdonaldmod.LearningMacMod.orbsPath;

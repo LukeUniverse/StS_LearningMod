@@ -23,8 +23,10 @@
     "NAME": "Locket of the Snake",
     "FLAVOR": "Made from a fossilized snake, a rare variation carried by few huntresses.",
     "DESCRIPTIONS": [
-      "Whenever you enter #yCalm, add 1 Miracle to your hand if you have no Miracle in hand.",
-      "Whenever you enter #yWrath, add 1 Shiv to your hand."
+      "Discarding cards during a Scry action counts as discarding.",
+      "The first time each combat you discard a Power, add a Miracle to your hand.",
+      "The first time each combat you discard a Skill, gain 5 block.",
+      "The first time each combat you discard a Attack, deal 6 damage to a random enemy."
     ]
   },
   "${modID}:NoxiousBattery": {

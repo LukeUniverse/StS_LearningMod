@@ -1,6 +1,7 @@
 package macdonaldmod.util;
 
 public class GeneralUtils {
+    //Default BasicMod Utils
     public static String arrToString(Object[] arr) {
         if (arr == null)
             return null;
@@ -18,4 +19,5 @@ public class GeneralUtils {
     public static String removePrefix(String ID) {
         return ID.substring(ID.indexOf(":") + 1);
     }
+
 }

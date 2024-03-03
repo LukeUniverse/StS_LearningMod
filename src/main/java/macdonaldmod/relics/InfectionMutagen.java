@@ -1,6 +1,5 @@
 package macdonaldmod.relics;
 
-import com.esotericsoftware.spine.AnimationState;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
@@ -18,12 +17,11 @@ import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.BurningBlood;
 import com.megacrit.cardcrawl.relics.RingOfTheSerpent;
 import com.megacrit.cardcrawl.relics.SnakeRing;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static basemod.BaseMod.logger;
-import static macdonaldmod.LearningMacMod.AlternateLookPath;
 import static macdonaldmod.LearningMacMod.makeID;
 
 public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterface {
@@ -51,8 +49,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
     public void onAttack(DamageInfo info, int damageAmount, AbstractCreature target) {
         if (damageAmount > 0 && info.type == DamageInfo.DamageType.NORMAL) {
             {
-                if (AbstractDungeon.player.getPower("Strength") != null)
-                {
+                if (AbstractDungeon.player.getPower("Strength") != null) {
                     this.addToTop(new ApplyPowerAction(target, AbstractDungeon.player, new PoisonPower(target, AbstractDungeon.player, AbstractDungeon.player.getPower("Strength").amount), AbstractDungeon.player.getPower("Strength").amount, true));
                 }
             }
@@ -71,9 +68,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
     }
 
     @Override
-    public void obtain()
-    {
-        //This logic should probably actually be in the event, not the relics but for now.... Oh well.
+    public void obtain() {
         if (AbstractDungeon.player.hasRelic(BurningBlood.ID)) {
             for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(BurningBlood.ID)) {
@@ -81,23 +76,20 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
                     break;
                 }
             }
-        }
-        else if(AbstractDungeon.player.hasRelic(SnakeRing.ID))
-        {
+        } else if (AbstractDungeon.player.hasRelic(SnakeRing.ID)) {
             for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(RingOfTheSerpent.ID)) {
                     instantObtain(AbstractDungeon.player, i, true);
                     break;
                 }
             }
-        }
-         else {
+        } else {
             super.obtain();
         }
     }
 
     public String getUpdatedDescription() {
-        return this.DESCRIPTIONS[0] +" NL " + DESCRIPTIONS[1] + this.counter;
+        return this.DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[1] + this.counter;
     }
 
 
@@ -111,7 +103,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
     //this is needed to actually update the tool tips.
     public void refreshTips() {
         this.tips.clear();
-        this.tips.add(new PowerTip(this.name, this.DESCRIPTIONS[0] +" NL " + DESCRIPTIONS[1] + this.counter));
+        this.tips.add(new PowerTip(this.name, this.DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[1] + this.counter));
         this.initializeTips();
     }
 
@@ -125,7 +117,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
 
     public void ChangeLook() //Since this is seemingly going to be the same for every relic... we should probably refactor and move this bit of code.
     {
-        macdonaldmod.LearningMacMod.GlobalChangeLook();
+        CrossCharacterRelicUtility.GlobalChangeLook();
     }
 
     public void modifyCardPool() {
@@ -153,9 +145,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
             classCards.add(CardLibrary.getCard(CorpseExplosion.ID));
             classCards.add(CardLibrary.getCard(Envenom.ID));
             classCards.add(CardLibrary.getCard(Burst.ID));
-        }
-        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
-        {
+        } else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)) {
             //Common
             classCards.add(CardLibrary.getCard(Flex.ID));
             classCards.add(CardLibrary.getCard(HeavyBlade.ID));
@@ -172,42 +162,8 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
             classCards.add(CardLibrary.getCard(LimitBreak.ID));
         }
 
-        mixCardpools(classCards);
+        CrossCharacterRelicUtility.ModifyCardPool(classCards);
     }
 
-    protected void mixCardpools(ArrayList<AbstractCard> cardList) {
-        for (AbstractCard c : cardList) {
-            if(c.rarity != AbstractCard.CardRarity.BASIC) {
-                switch (c.rarity) {
-                    case COMMON: {
-                        AbstractDungeon.commonCardPool.removeCard(c);
-                        AbstractDungeon.srcCommonCardPool.removeCard(c);
-                        AbstractDungeon.commonCardPool.addToTop(c);
-                        AbstractDungeon.srcCommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case UNCOMMON: {
-                        AbstractDungeon.uncommonCardPool.removeCard(c);
-                        AbstractDungeon.srcUncommonCardPool.removeCard(c);
-                        AbstractDungeon.uncommonCardPool.addToTop(c);
-                        AbstractDungeon.srcUncommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case RARE: {
-                        AbstractDungeon.rareCardPool.removeCard(c);
-                        AbstractDungeon.srcRareCardPool.removeCard(c);
-                        AbstractDungeon.rareCardPool.addToTop(c);
-                        AbstractDungeon.srcRareCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case CURSE: {
-                        AbstractDungeon.curseCardPool.removeCard(c);
-                        AbstractDungeon.srcCurseCardPool.removeCard(c);
-                        AbstractDungeon.curseCardPool.addToTop(c);
-                        AbstractDungeon.srcCurseCardPool.addToBottom(c);
-                    }
-                }
-            }
-        }
-    }
+
 }

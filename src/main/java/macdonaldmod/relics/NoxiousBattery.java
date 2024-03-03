@@ -1,21 +1,19 @@
 package macdonaldmod.relics;
 
-import com.esotericsoftware.spine.AnimationState;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.blue.*;
 import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.CrackedCore;
 import com.megacrit.cardcrawl.relics.SnakeRing;
 import macdonaldmod.Orbs.NoxiousOrb;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static basemod.BaseMod.logger;
@@ -44,20 +42,6 @@ public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterfac
         this.addToBot(new ChannelAction(new NoxiousOrb()));
     }
 
-    // maybe??
-    //public void onVictory() {
-    //this.addToTop(new RelicAboveCreatureAction(AbstractDungeon.player, this));
-    //AbstractPlayer p = AbstractDungeon.player;
-        /*
-        Add a heal here based off blue shit.
-        if (p.currentHealth > 0) {
-            p.heal(AbstractPlayer.poisonKillCount);
-            this.counter = 0;
-        }
-        */
-
-    //}
-
     public String getUpdatedDescription() {
         return this.DESCRIPTIONS[0];
     }
@@ -80,7 +64,6 @@ public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterfac
     @Override
     public void obtain()
     {
-        //This logic should probably actually be in the event, not the relics but for now.... Oh well.
         if (AbstractDungeon.player.hasRelic(SnakeRing.ID)) {
             for (int i=0; i<AbstractDungeon.player.relics.size(); ++i) {
                 if (AbstractDungeon.player.relics.get(i).relicId.equals(SnakeRing.ID)) {
@@ -112,9 +95,8 @@ public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterfac
 
     public void ChangeLook()
     {
-        macdonaldmod.LearningMacMod.GlobalChangeLook();
+        CrossCharacterRelicUtility.GlobalChangeLook();
     }
-
     public void modifyCardPool() {
         logger.info(ID +" acquired, modifying card pool.");
 
@@ -170,44 +152,7 @@ public class NoxiousBattery extends BaseRelic implements CrossClassRelicInterfac
             classCards.add(CardLibrary.getCard(Envenom.ID));
             classCards.add(CardLibrary.getCard(Burst.ID));
         }
-
-            mixCardpools(classCards);
-
+        CrossCharacterRelicUtility.ModifyCardPool(classCards);
     }
 
-    protected void mixCardpools(ArrayList<AbstractCard> cardList) {
-        for (AbstractCard c : cardList) {
-            if(c.rarity != AbstractCard.CardRarity.BASIC) {
-                switch (c.rarity) {
-                    case COMMON: {
-                        AbstractDungeon.commonCardPool.removeCard(c);
-                        AbstractDungeon.srcCommonCardPool.removeCard(c);
-                        AbstractDungeon.commonCardPool.addToTop(c);
-                        AbstractDungeon.srcCommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case UNCOMMON: {
-                        AbstractDungeon.uncommonCardPool.removeCard(c);
-                        AbstractDungeon.srcUncommonCardPool.removeCard(c);
-                        AbstractDungeon.uncommonCardPool.addToTop(c);
-                        AbstractDungeon.srcUncommonCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case RARE: {
-                        AbstractDungeon.rareCardPool.removeCard(c);
-                        AbstractDungeon.srcRareCardPool.removeCard(c);
-                        AbstractDungeon.rareCardPool.addToTop(c);
-                        AbstractDungeon.srcRareCardPool.addToBottom(c);
-                        continue;
-                    }
-                    case CURSE: {
-                        AbstractDungeon.curseCardPool.removeCard(c);
-                        AbstractDungeon.srcCurseCardPool.removeCard(c);
-                        AbstractDungeon.curseCardPool.addToTop(c);
-                        AbstractDungeon.srcCurseCardPool.addToBottom(c);
-                    }
-                }
-            }
-        }
-    }
 }

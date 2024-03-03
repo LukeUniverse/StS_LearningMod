@@ -12,7 +12,7 @@ import com.megacrit.cardcrawl.localization.OrbStrings;
 import com.megacrit.cardcrawl.orbs.AbstractOrb;
 import macdonaldmod.cards.EvokeStanceOrb;
 import macdonaldmod.util.CalmOrbPassiveEffect;
-import macdonaldmod.util.HellfireOrbPassiveEffect;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 import macdonaldmod.util.TextureLoader;
 
 import static macdonaldmod.LearningMacMod.*;
@@ -56,7 +56,7 @@ public class CalmOrb extends AbstractOrb{
 
     public void onEvoke() {
 
-        ActuallyChangeStance = true;
+        CrossCharacterRelicUtility.ActuallyChangeStance = true;
         AbstractDungeon.actionManager.addToBottom(new ChangeStanceAction("Calm"));
     }
 

@@ -1,28 +1,34 @@
 package macdonaldmod.Patches;
 
-import com.evacipated.cardcrawl.modthespire.lib.ByRef;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInsertPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.actions.GameActionManager;
 import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.actions.utility.ScryAction;
 import com.megacrit.cardcrawl.actions.watcher.ChangeStanceAction;
+import com.megacrit.cardcrawl.cards.blue.BallLightning;
+import com.megacrit.cardcrawl.cards.blue.Recursion;
+import com.megacrit.cardcrawl.cards.green.BouncingFlask;
+import com.megacrit.cardcrawl.cards.green.PoisonedStab;
+import com.megacrit.cardcrawl.cards.purple.Eruption;
+import com.megacrit.cardcrawl.cards.purple.Vigilance;
+import com.megacrit.cardcrawl.cards.red.Bash;
+import com.megacrit.cardcrawl.cards.red.Defend_Red;
+import com.megacrit.cardcrawl.cards.red.Strike_Red;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.stances.AbstractStance;
-import com.megacrit.cardcrawl.stances.WrathStance;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
+import com.megacrit.cardcrawl.neow.NeowRoom;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import macdonaldmod.LearningMacMod;
 import macdonaldmod.Orbs.CalmOrb;
 import macdonaldmod.Orbs.WrathOrb;
-import macdonaldmod.relics.CrossClassRelicInterface;
-import macdonaldmod.relics.StanceChip;
+import macdonaldmod.relics.*;
+import macdonaldmod.util.CrossCharacterRelicUtility;
 
-import java.util.Iterator;
-
-import static macdonaldmod.LearningMacMod.ActuallyChangeStance;
-import static macdonaldmod.LearningMacMod.logger;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class CrossClassRelicPatches {
@@ -69,8 +75,8 @@ public class CrossClassRelicPatches {
             //Only pull this nonsense if we're trying to enter calm or wrath, (and we have stance chip) otherwise do normal stuff.
             if ((___id.equals("Wrath") || ___id.equals("Calm")) && AbstractDungeon.player.hasRelic(StanceChip.ID)) {
 
-                if (ActuallyChangeStance) {
-                    ActuallyChangeStance = false;
+                if (CrossCharacterRelicUtility.ActuallyChangeStance) {
+                    CrossCharacterRelicUtility.ActuallyChangeStance = false;
                     return SpireReturn.Continue();
 
                 } else {
@@ -100,20 +106,88 @@ public class CrossClassRelicPatches {
         public static SpireReturn<Void> Insert(ScryAction __instance) {
             for (AbstractCard c : AbstractDungeon.gridSelectScreen.selectedCards) {
 
-                //Do something here if it is the first time you've discard
-                //X, Y, and Z.
+                AbstractDungeon.player.drawPile.moveToDiscardPile(c);
+                GameActionManager.incrementDiscard(false);
 
                 for (AbstractRelic r : AbstractDungeon.player.relics)
                     r.onManualDiscard();
-
-                AbstractDungeon.player.drawPile.moveToDiscardPile(c);
                 c.triggerOnManualDiscard();
-                GameActionManager.incrementDiscard(false);
             }
             AbstractDungeon.gridSelectScreen.selectedCards.clear();
 
             return SpireReturn.Return();
         }
+    }
+
+    @SpirePatch(
+            clz = com.megacrit.cardcrawl.neow.NeowRoom.class,
+            method = SpirePatch.CONSTRUCTOR,
+            paramtypez = boolean.class)
+    public static class ReflectTwist {
+        @SpirePostfixPatch
+        public static void Postfix(NeowRoom room, boolean b) {
+            SpireConfig config = null;
+            try {
+                config = new SpireConfig("MacdonaldMod", "config");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            String var = config.getString(LearningMacMod.MacdonaldModOverrideIronclad);
+            //this DEFINITELY feels weird to be here, and as mentioned on the event, it bares repeating here... this logic should definitely be on the relic itself
+           if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+           {
+               switch (var) {
+                   case "Green": {
+                       //New Relic
+                       AbstractRelic infectionRelic = RelicLibrary.getRelic(InfectionMutagen.ID).makeCopy();
+                       //Cards to remove
+                       List<String> cardIDsToRemove = new ArrayList<>();
+                       cardIDsToRemove.add(Bash.ID);
+                       cardIDsToRemove.add(Strike_Red.ID);
+                       //Cards to add
+                       List<AbstractCard> cardsToAdd = new ArrayList<>();
+                       cardsToAdd.add(new BouncingFlask());
+                       cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
+
+                       //Julie do the thing!
+                       CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic, cardIDsToRemove, cardsToAdd);
+                       break;
+                   }
+                   case "Blue": {
+                       //New Relic
+                       AbstractRelic hellFireRelic = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
+                       //Cards to remove
+                       List<String> cardIDsToRemove = new ArrayList<>();
+                       cardIDsToRemove.add(Bash.ID);
+                       cardIDsToRemove.add(Strike_Red.ID);
+                       //Cards to add
+                       List<AbstractCard> cardsToAdd = new ArrayList<>();
+                       cardsToAdd.add(new Recursion());
+                       cardsToAdd.add(new BallLightning());
+                       //Julie do the thing!
+                       CrossCharacterRelicUtility.ResolveClassMerge(hellFireRelic, cardIDsToRemove, cardsToAdd);
+                       break;
+                   }
+                   case "Purple": {
+                       //New Relic
+                       AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
+                       //Cards to remove
+                       List<String> cardIDsToRemove = new ArrayList<>();
+                       cardIDsToRemove.add(Bash.ID);
+                       cardIDsToRemove.add(Defend_Red.ID);
+                       //Cards to add
+                       List<AbstractCard> cardsToAdd = new ArrayList<>();
+                       cardsToAdd.add(new Eruption());
+                       cardsToAdd.add(new Vigilance());
+                       //Julie do the thing!
+                       CrossCharacterRelicUtility.ResolveClassMerge(bloodRedLotus, cardIDsToRemove, cardsToAdd);
+                       break;
+                   }
+               }
+           }
+        }
+
     }
 
 }

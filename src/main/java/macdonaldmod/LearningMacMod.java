@@ -1,15 +1,17 @@
 package macdonaldmod;
 
-import basemod.AutoAdd;
-import basemod.BaseMod;
+import basemod.*;
 import basemod.eventUtil.AddEventParams;
 import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Color;
 import com.esotericsoftware.spine.AnimationState;
+import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.dungeons.Exordium;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import macdonaldmod.cards.BaseCard;
@@ -32,9 +34,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.scannotation.AnnotationDB;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static macdonaldmod.Patches.AbstractCardEnum.MACDONALDYELLOW;
 
@@ -58,16 +62,20 @@ public class LearningMacMod implements
     public static String makeID(String id) {
         return modID + ":" + id;
     }
+    public static final String MultiverseEventEnabled = "MacdonaldModEventEnabled";
+    public static final String MacdonaldModOverrideIronclad = "MacdonaldModOverrideIronclad";
+
+    private ModPanel settingsPanel;
 
     //This will be called by ModTheSpire because of the @SpireInitializer annotation at the top of the class.
     public static void initialize() {
         new LearningMacMod();
-
-        }
+    }
 
     public LearningMacMod() {
         BaseMod.subscribe(this); //This will make BaseMod trigger all the subscribers at their appropriate times.
         logger.info(modID + " subscribed to BaseMod.");
+
 
         //Okay, I've grabbed the actual pngs, so let's try this now...
 
@@ -78,23 +86,23 @@ public class LearningMacMod implements
                 cards1024Path("bg_attack_red.png"), cards1024Path("bg_skill_red.png"),
                 cards1024Path("bg_power_red.png"), cards512Path("card_yellow_orb.png"),//TODO make a large version of this art?
                 cards512Path("card_yellow_orb.png")); //What is this final orb path for???  Hmm, maybe the tiny art one?
-
-
     }
 
     @Override
     public void receivePostInitialize() {
         //This loads the image used as an icon in the in-game mods menu.
         Texture badgeTexture = TextureLoader.getTexture(imagePath("badge.png"));
-        //Set up the mod information displayed in the in-game mods menu.
-        //The information used is taken from your pom.xml file.
-        BaseMod.registerModBadge(badgeTexture, info.Name, GeneralUtils.arrToString(info.Authors), info.Description, null);
 
-        //Seems funky, but I think the bast way to handle this is just creating an instance of my event for each class...
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.IRONCLAD).create());
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.THE_SILENT).create());
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.DEFECT).create());
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.WATCHER).create());
+        ReadyModPanel();
+
+
+        //The information used is taken from your pom.xml file.
+        BaseMod.registerModBadge(badgeTexture, info.Name, GeneralUtils.arrToString(info.Authors), info.Description, settingsPanel);
+
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.IRONCLAD).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.THE_SILENT).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.DEFECT).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.WATCHER).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
     }
 
     @Override
@@ -132,88 +140,6 @@ public class LearningMacMod implements
     private static final String defaultLanguage = "eng";
 
     public static final Map<String, KeywordInfo> keywords = new HashMap<>();
-
-    //this probably shouldn't be here, hah.
-    public static void GlobalChangeLook()
-    {
-        try {
-            //I don't think this needs to be any different for any of the classes...
-            Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation", String.class, String.class, Float.TYPE);
-            loadAnimationMethod.setAccessible(true);
-            loadAnimationMethod.invoke(AbstractDungeon.player, AlternateLookPath("skeleton.atlas"), AlternateLookPath("skeleton.json"), 1.0F);
-            AnimationState.TrackEntry e = AbstractDungeon.player.state.setAnimation(0, "Idle", true);
-            e.setTimeScale(0.6F);
-
-            // loadEyeAnimation for the watcher???;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-        }
-    }
-
-    public static boolean ActuallyChangeStance = false;
-
-    public static String AlternateLookPath(String fileName) {
-        String rv = "images/characters/ironclad"; //Default location for default Ironclad look.
-        //TODO^^Make that the default string for what ever character you are current playing, lol
-        /*
-        user "Melt" from discord said:
-        oh right should probably mention this
-        if you're just calling loadAnimation again
-        you'll want to dispose the player's atlas first
-        So this is probably a TODO
-         */
-        if(AbstractDungeon.player != null) {
-            for (AbstractRelic r : AbstractDungeon.player.relics) {
-                if (r instanceof CrossClassRelicInterface) {
-                    if (r.relicId.equals(InfectionMutagen.ID)) {
-                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
-                            rv = "macdonaldmod/images/characters/greenpants/" + fileName;
-                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
-                            rv = "macdonaldmod/images/characters/Silent/Red/" + fileName;
-                        break;
-
-                    } else if (r.relicId.equals(HellfireBattery.ID)) {
-                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
-                            rv = "macdonaldmod/images/characters/bluepants/" + fileName;
-                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-                            rv = "macdonaldmod/images/characters/Defect/Red/" + fileName;
-                        break;
-                    } else if (r.relicId.equals(BloodLotus.ID)) {
-                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
-                            rv = "macdonaldmod/images/characters/purplepants/" + fileName;
-                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            rv = "macdonaldmod/images/characters/Watcher/Red/" + fileName;
-                        break;
-                    }
-                    else if (r.relicId.equals(NoxiousBattery.ID)) {
-                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
-                            rv = "macdonaldmod/images/characters/Silent/Blue/" + fileName;
-                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-                            rv = "macdonaldmod/images/characters/Defect/Green/" + fileName;
-                        break;
-
-                    }
-                    else if (r.relicId.equals(LocketOfTheSnake.ID)) {
-                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
-                            rv = "macdonaldmod/images/characters/Silent/Purple/" + fileName;
-                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            rv = "macdonaldmod/images/characters/Watcher/Green/" + fileName;
-                        break;
-                    }
-                    else if (r.relicId.equals(StanceChip.ID)) {
-                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-                            rv = "macdonaldmod/images/characters/Defect/Purple/" + fileName;
-                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-                            rv = "macdonaldmod/images/characters/Watcher/Blue/" + fileName;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return rv;
-    }
 
     @Override
     public void receiveEditStrings() {
@@ -337,4 +263,139 @@ public class LearningMacMod implements
             throw new RuntimeException("Failed to determine mod info/ID based on initializer.");
         }
     }
+
+    String IroncladTwist = "NO";
+    private final ArrayList<ModColorDisplay> ironcladButtons = new ArrayList<ModColorDisplay>();
+    Color colorPurple = new Color(171f,0f,196f,1f);//Purple
+    Color colorBlue = new Color(0f,117f,255f,1f); //Blue
+    Color colorGreen = new Color(0f,164f,0f,1f); //Green
+    private float xPos = 350f, yPos = 700f, orgYPos = 750f;
+    public static SpireConfig config;
+
+    private void ReadyModPanel(){
+
+        try {
+            config = new SpireConfig("MacdonaldMod", "config");
+
+            if (!config.has(MultiverseEventEnabled))
+                config.setBool(MultiverseEventEnabled, true);
+            if (!config.has(MacdonaldModOverrideIronclad))
+                config.setString(MacdonaldModOverrideIronclad, "no");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        UIStrings configStrings = CardCrawlGame.languagePack.getUIString(makeID("ConfigMenuText"));
+        Texture colorButton = new Texture(resourcesFolder + "/images/colorButton.png");
+        Texture colorButtonOutline = new Texture(resourcesFolder + "/images/colorButtonOutline.png");
+
+        settingsPanel = new ModPanel();
+
+        //Set up the mod information displayed in the in-game mods menu.
+        List<Color> removeColors = new ArrayList<>();
+        List<ModColorDisplay> removeColorsButtons = new ArrayList<ModColorDisplay>();
+
+        removeColors.add(colorPurple); removeColors.add(colorBlue); removeColors.add(colorGreen);
+
+
+        Consumer<ModColorDisplay> handleRemoveClick = modColorDisplay -> {
+            removeColorsButtons.forEach(m -> {
+                m.rOutline = Color.BLACK.r;
+                m.gOutline = Color.BLACK.g;
+                m.bOutline = Color.BLACK.b;
+            });
+
+            if(modColorDisplay.r == colorPurple.r &&
+                    modColorDisplay.g == colorPurple.g &&
+                    modColorDisplay.b == colorPurple.b)
+            {
+                IroncladTwist = "Purple";
+                modColorDisplay.rOutline = Color.WHITE.r;
+                modColorDisplay.gOutline = Color.WHITE.g;
+                modColorDisplay.bOutline = Color.WHITE.b;
+            } else if(modColorDisplay.r == colorBlue.r &&
+                    modColorDisplay.g == colorBlue.g &&
+                    modColorDisplay.b == colorBlue.b)
+            {
+                IroncladTwist = "Blue";
+
+                modColorDisplay.rOutline = Color.WHITE.r;
+                modColorDisplay.gOutline = Color.WHITE.g;
+                modColorDisplay.bOutline = Color.WHITE.b;
+            } else if(modColorDisplay.r == colorGreen.r &&
+                    modColorDisplay.g == colorGreen.g &&
+                    modColorDisplay.b == colorGreen.b)
+            {
+                IroncladTwist = "Green";
+
+                modColorDisplay.rOutline = Color.WHITE.r;
+                modColorDisplay.gOutline = Color.WHITE.g;
+                modColorDisplay.bOutline = Color.WHITE.b;
+            }
+            config.setString(MacdonaldModOverrideIronclad, IroncladTwist);
+            saveConfig();
+        };
+
+//
+
+        ModLabeledToggleButton b = new ModLabeledToggleButton("Include event?", xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, config.getBool(MultiverseEventEnabled), settingsPanel, l -> {
+        },  modToggleButton -> {
+            config.setBool(MultiverseEventEnabled, modToggleButton.enabled);
+            saveConfig();
+        });
+
+        settingsPanel.addUIElement(b);
+
+        settingsPanel.addUIElement(new ModLabel("Ironclad Twist Color:", xPos, yPos-50, settingsPanel, update->{}));
+
+        for (int i = 0; i < removeColors.size(); i++) {
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + i * 96f, yPos - (10f * Settings.scale) -100, 0f, colorButton, colorButtonOutline, handleRemoveClick);
+            Color color = removeColors.get(i);
+            modColorDisplay.r = color.r;
+            modColorDisplay.g = color.g;
+            modColorDisplay.b = color.b;
+            modColorDisplay.a = color.a;
+
+            //this should handle getting the existing setting, and then well, making it selected
+            ReflectExistingTwistSetting(color, modColorDisplay);
+
+            removeColorsButtons.add(modColorDisplay);
+            ironcladButtons.add(modColorDisplay);
+            settingsPanel.addUIElement(modColorDisplay);
+        }
+    }
+
+    private void ReflectExistingTwistSetting(Color color, ModColorDisplay modColorDisplay)
+    {
+        String twistColor = config.getString(MacdonaldModOverrideIronclad);
+        if(twistColor.equals("Blue") && color.r == colorBlue.r && color.g ==colorBlue.g && color.b == colorBlue.b)//values here
+        {
+            modColorDisplay.rOutline = Color.WHITE.r;
+            modColorDisplay.gOutline = Color.WHITE.g;
+            modColorDisplay.bOutline = Color.WHITE.b;
+        }
+        else if(twistColor.equals("Green") && color.r == colorGreen.r && color.g ==colorGreen.g && color.b == colorGreen.b)//values here
+        {
+            modColorDisplay.rOutline = Color.WHITE.r;
+            modColorDisplay.gOutline = Color.WHITE.g;
+            modColorDisplay.bOutline = Color.WHITE.b;
+        }
+        else if(twistColor.equals("Purple") && color.r == colorPurple.r && color.g ==colorPurple.g && color.b == colorPurple.b)//values here
+        {
+            modColorDisplay.rOutline = Color.WHITE.r;
+            modColorDisplay.gOutline = Color.WHITE.g;
+            modColorDisplay.bOutline = Color.WHITE.b;
+        }
+    }
+
+
+    private void saveConfig() {
+        try {
+            config.save();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
