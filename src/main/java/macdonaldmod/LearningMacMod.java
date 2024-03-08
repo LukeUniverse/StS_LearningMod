@@ -4,15 +4,11 @@ import basemod.*;
 import basemod.eventUtil.AddEventParams;
 import basemod.interfaces.*;
 import com.badlogic.gdx.graphics.Color;
-import com.esotericsoftware.spine.AnimationState;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.dungeons.Exordium;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import macdonaldmod.cards.BaseCard;
 import macdonaldmod.events.MultiverseEvent;
@@ -35,7 +31,6 @@ import org.apache.logging.log4j.Logger;
 import org.scannotation.AnnotationDB;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
@@ -62,8 +57,11 @@ public class LearningMacMod implements
     public static String makeID(String id) {
         return modID + ":" + id;
     }
-    public static final String MultiverseEventEnabled = "MacdonaldModEventEnabled";
-    public static final String MacdonaldModOverrideIronclad = "MacdonaldModOverrideIronclad";
+    public static final String _multiverseEventEnabled = "MacdonaldModEventEnabled";
+    public static final String _macdonaldModOverrideIronclad = "MacdonaldModOverrideIronclad";
+    public static final String _macdonaldModOverrideSilent = "MacdonaldModOverrideSilent";
+    public static final String _macdonaldModOverrideDefect = "MacdonaldModOverrideDefect";
+    public static final String _macdonaldModOverrideWatcher = "MacdonaldModOverrideWatcher";
 
     private ModPanel settingsPanel;
 
@@ -99,10 +97,10 @@ public class LearningMacMod implements
         //The information used is taken from your pom.xml file.
         BaseMod.registerModBadge(badgeTexture, info.Name, GeneralUtils.arrToString(info.Authors), info.Description, settingsPanel);
 
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.IRONCLAD).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.THE_SILENT).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.DEFECT).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
-        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.WATCHER).spawnCondition(() -> config.getBool(MultiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.IRONCLAD).spawnCondition(() -> config.getBool(_multiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.THE_SILENT).spawnCondition(() -> config.getBool(_multiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.DEFECT).spawnCondition(() -> config.getBool(_multiverseEventEnabled)).create());
+        BaseMod.addEvent(new AddEventParams.Builder(MultiverseEvent.ID, MultiverseEvent.class).dungeonID(Exordium.ID).playerClass(AbstractPlayer.PlayerClass.WATCHER).spawnCondition(() -> config.getBool(_multiverseEventEnabled)).create());
     }
 
     @Override
@@ -264,12 +262,19 @@ public class LearningMacMod implements
         }
     }
 
-    String IroncladTwist = "NO";
+    //Can't these just be declared in the method, why are they here?
+    /*
     private final ArrayList<ModColorDisplay> ironcladButtons = new ArrayList<ModColorDisplay>();
-    Color colorPurple = new Color(171f,0f,196f,1f);//Purple
-    Color colorBlue = new Color(0f,117f,255f,1f); //Blue
-    Color colorGreen = new Color(0f,164f,0f,1f); //Green
-    private float xPos = 350f, yPos = 700f, orgYPos = 750f;
+    private final ArrayList<ModColorDisplay> silentButtons = new ArrayList<ModColorDisplay>();
+    private final ArrayList<ModColorDisplay> defectButtons = new ArrayList<ModColorDisplay>();
+    private final ArrayList<ModColorDisplay> watcherButtons = new ArrayList<ModColorDisplay>();
+*/
+
+    Color _colorRed = new Color(171f,0f,0f,1f); //Red
+    Color _colorPurple = new Color(171f,0f,196f,1f);//Purple
+    Color _colorBlue = new Color(0f,117f,255f,1f); //Blue
+    Color _colorGreen = new Color(0f,164f,0f,1f); //Green
+    private float xPos = 350f, yPos = 700f;//, orgYPos = 750f; not sure what this one was for?
     public static SpireConfig config;
 
     private void ReadyModPanel(){
@@ -277,111 +282,273 @@ public class LearningMacMod implements
         try {
             config = new SpireConfig("MacdonaldMod", "config");
 
-            if (!config.has(MultiverseEventEnabled))
-                config.setBool(MultiverseEventEnabled, true);
-            if (!config.has(MacdonaldModOverrideIronclad))
-                config.setString(MacdonaldModOverrideIronclad, "no");
+            if (!config.has(_multiverseEventEnabled))
+                config.setBool(_multiverseEventEnabled, true);
+            if (!config.has(_macdonaldModOverrideIronclad))
+                config.setString(_macdonaldModOverrideIronclad, "no");
+            if (!config.has(_macdonaldModOverrideSilent))
+                config.setString(_macdonaldModOverrideSilent, "no");
+            if (!config.has(_macdonaldModOverrideDefect))
+                config.setString(_macdonaldModOverrideDefect, "no");
+            if (!config.has(_macdonaldModOverrideWatcher))
+                config.setString(_macdonaldModOverrideWatcher, "no");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        //Not currently using this, maybe just get rid of it?
         UIStrings configStrings = CardCrawlGame.languagePack.getUIString(makeID("ConfigMenuText"));
+
         Texture colorButton = new Texture(resourcesFolder + "/images/colorButton.png");
         Texture colorButtonOutline = new Texture(resourcesFolder + "/images/colorButtonOutline.png");
 
         settingsPanel = new ModPanel();
 
         //Set up the mod information displayed in the in-game mods menu.
-        List<Color> removeColors = new ArrayList<>();
-        List<ModColorDisplay> removeColorsButtons = new ArrayList<ModColorDisplay>();
-
-        removeColors.add(colorPurple); removeColors.add(colorBlue); removeColors.add(colorGreen);
 
 
-        Consumer<ModColorDisplay> handleRemoveClick = modColorDisplay -> {
-            removeColorsButtons.forEach(m -> {
-                m.rOutline = Color.BLACK.r;
-                m.gOutline = Color.BLACK.g;
-                m.bOutline = Color.BLACK.b;
-            });
 
-            if(modColorDisplay.r == colorPurple.r &&
-                    modColorDisplay.g == colorPurple.g &&
-                    modColorDisplay.b == colorPurple.b)
-            {
-                IroncladTwist = "Purple";
-                modColorDisplay.rOutline = Color.WHITE.r;
-                modColorDisplay.gOutline = Color.WHITE.g;
-                modColorDisplay.bOutline = Color.WHITE.b;
-            } else if(modColorDisplay.r == colorBlue.r &&
-                    modColorDisplay.g == colorBlue.g &&
-                    modColorDisplay.b == colorBlue.b)
-            {
-                IroncladTwist = "Blue";
-
-                modColorDisplay.rOutline = Color.WHITE.r;
-                modColorDisplay.gOutline = Color.WHITE.g;
-                modColorDisplay.bOutline = Color.WHITE.b;
-            } else if(modColorDisplay.r == colorGreen.r &&
-                    modColorDisplay.g == colorGreen.g &&
-                    modColorDisplay.b == colorGreen.b)
-            {
-                IroncladTwist = "Green";
-
-                modColorDisplay.rOutline = Color.WHITE.r;
-                modColorDisplay.gOutline = Color.WHITE.g;
-                modColorDisplay.bOutline = Color.WHITE.b;
-            }
-            config.setString(MacdonaldModOverrideIronclad, IroncladTwist);
-            saveConfig();
-        };
-
-//
-
-        ModLabeledToggleButton b = new ModLabeledToggleButton("Include event?", xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, config.getBool(MultiverseEventEnabled), settingsPanel, l -> {
+        ModLabeledToggleButton b = new ModLabeledToggleButton("Include event?", xPos, yPos, Settings.CREAM_COLOR, FontHelper.charDescFont, config.getBool(_multiverseEventEnabled), settingsPanel, l -> {
         },  modToggleButton -> {
-            config.setBool(MultiverseEventEnabled, modToggleButton.enabled);
+            config.setBool(_multiverseEventEnabled, modToggleButton.enabled);
             saveConfig();
         });
 
         settingsPanel.addUIElement(b);
+        //let's see if this changes the color correctly...
+        settingsPanel.addUIElement(new ModLabel("Ironclad Twist Color:", xPos, yPos-50, Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, update->{}));
 
-        settingsPanel.addUIElement(new ModLabel("Ironclad Twist Color:", xPos, yPos-50, settingsPanel, update->{}));
+        //There is probably a cleaner way to handle this, but for now this is what I'm doing.
 
-        for (int i = 0; i < removeColors.size(); i++) {
-            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + i * 96f, yPos - (10f * Settings.scale) -100, 0f, colorButton, colorButtonOutline, handleRemoveClick);
-            Color color = removeColors.get(i);
+//REGION: Ironclad Buttons
+        List<Color> ironcladRemoveColors = new ArrayList<>();
+        ironcladRemoveColors.add(_colorGreen); ironcladRemoveColors.add(_colorBlue); ironcladRemoveColors.add(_colorPurple);
+        List<ModColorDisplay> ironcladRemoveColorsButtons = new ArrayList<ModColorDisplay>();
+        //This sets up the 'Click' actions
+        Consumer<ModColorDisplay> handleRemoveClick = getCharModColorDisplayConsumer(ironcladRemoveColorsButtons, _macdonaldModOverrideIronclad);
+
+        //Then *actually* create the buttons.
+        for (int i = 0; i < ironcladRemoveColors.size(); i++) {
+
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + i * 84f, yPos - (10f * Settings.scale) -100, 0f, colorButton, colorButtonOutline, handleRemoveClick);
+            Color color = ironcladRemoveColors.get(i);
             modColorDisplay.r = color.r;
             modColorDisplay.g = color.g;
             modColorDisplay.b = color.b;
             modColorDisplay.a = color.a;
 
             //this should handle getting the existing setting, and then well, making it selected
-            ReflectExistingTwistSetting(color, modColorDisplay);
+            ReflectExistingTwistSetting(color, modColorDisplay, config.getString(_macdonaldModOverrideIronclad));
 
-            removeColorsButtons.add(modColorDisplay);
-            ironcladButtons.add(modColorDisplay);
+            ironcladRemoveColorsButtons.add(modColorDisplay);
+            //ironcladButtons.add(modColorDisplay);
             settingsPanel.addUIElement(modColorDisplay);
         }
+//END_REGION: Ironclad Buttons.
+
+//REGION: Silent Buttons
+        //TODO, yeah, eh make sure measurements are right
+        yPos = yPos - 100;
+        settingsPanel.addUIElement(new ModLabel("Silent Twist Color:", xPos, yPos-50,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, update->{}));
+
+        //Beginning of Silent section:
+
+        List<Color> silentRemoveColors = new ArrayList<>();
+        silentRemoveColors.add(_colorRed); silentRemoveColors.add(_colorBlue); silentRemoveColors.add(_colorPurple);
+        List<ModColorDisplay> silentRemoveColorsButtons = new ArrayList<ModColorDisplay>();
+        //This sets up the 'Click' actions
+        Consumer<ModColorDisplay> silentHandleRemoveClick = getCharModColorDisplayConsumer(silentRemoveColorsButtons, _macdonaldModOverrideSilent);
+
+        //Then *actually* create the buttons.
+        for (int i = 0; i < silentRemoveColors.size(); i++) {
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + i * 84f, yPos - (10f * Settings.scale) -100, 0f, colorButton, colorButtonOutline, silentHandleRemoveClick);
+            Color color = silentRemoveColors.get(i);
+            modColorDisplay.r = color.r;
+            modColorDisplay.g = color.g;
+            modColorDisplay.b = color.b;
+            modColorDisplay.a = color.a;
+
+            //this should handle getting the existing setting, and then well, making it selected
+            ReflectExistingTwistSetting(color, modColorDisplay, config.getString(_macdonaldModOverrideSilent));
+
+            silentRemoveColorsButtons.add(modColorDisplay);
+            //wait is this below actually doing... anything?
+            //silentButtons.add(modColorDisplay);
+            settingsPanel.addUIElement(modColorDisplay);
+        }
+//END_REGION: Silent Buttons.
+
+//REGION: Defect Buttons
+        yPos = yPos - 100;
+        settingsPanel.addUIElement(new ModLabel("Defect Twist Color:", xPos, yPos-50,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, update->{}));
+
+        //Beginning of Silent section:
+
+        List<Color> defectRemoveColors = new ArrayList<>();
+        defectRemoveColors.add(_colorRed); defectRemoveColors.add(_colorGreen); defectRemoveColors.add(_colorPurple);
+        List<ModColorDisplay> defectRemoveColorsButtons = new ArrayList<ModColorDisplay>();
+        //This sets up the 'Click' actions
+        Consumer<ModColorDisplay> defectHandleRemoveClick = getCharModColorDisplayConsumer(defectRemoveColorsButtons, _macdonaldModOverrideDefect);
+
+        //Then *actually* create the buttons.
+        for (int i = 0; i < defectRemoveColors.size(); i++) {
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + i * 84f, yPos - (10f * Settings.scale) -100, 0f, colorButton, colorButtonOutline, defectHandleRemoveClick);
+            Color color = defectRemoveColors.get(i);
+            modColorDisplay.r = color.r;
+            modColorDisplay.g = color.g;
+            modColorDisplay.b = color.b;
+            modColorDisplay.a = color.a;
+
+            //this should handle getting the existing setting, and then well, making it selected
+            ReflectExistingTwistSetting(color, modColorDisplay, config.getString(_macdonaldModOverrideDefect));
+
+            defectRemoveColorsButtons.add(modColorDisplay);
+            //wait, is this below actually doing... Anything?
+            //defectButtons.add(modColorDisplay);
+            settingsPanel.addUIElement(modColorDisplay);
+        }
+//END_REGION: defect Buttons.
+
+//REGION: Watcher Buttons
+        yPos = yPos - 100;
+        settingsPanel.addUIElement(new ModLabel("Watcher Twist Color:", xPos, yPos-50,Settings.CREAM_COLOR, FontHelper.charDescFont, settingsPanel, update->{}));
+
+        //Beginning of Silent section:
+
+        List<Color> watcherRemoveColors = new ArrayList<>();
+        watcherRemoveColors.add(_colorRed); watcherRemoveColors.add(_colorGreen); watcherRemoveColors.add(_colorBlue);
+        List<ModColorDisplay> watcherRemoveColorsButtons = new ArrayList<ModColorDisplay>();
+        //This sets up the 'Click' actions
+        Consumer<ModColorDisplay> watcherHandleRemoveClick = getCharModColorDisplayConsumer(watcherRemoveColorsButtons, _macdonaldModOverrideWatcher);
+
+        //Then *actually* create the buttons.
+        for (int i = 0; i < watcherRemoveColors.size(); i++) {
+            ModColorDisplay modColorDisplay = new ModColorDisplay(xPos + i * 84f, yPos - (10f * Settings.scale) -100, 0f, colorButton, colorButtonOutline, watcherHandleRemoveClick);
+            Color color = watcherRemoveColors.get(i);
+            modColorDisplay.r = color.r;
+            modColorDisplay.g = color.g;
+            modColorDisplay.b = color.b;
+            modColorDisplay.a = color.a;
+
+            //this should handle getting the existing setting, and then well, making it selected
+            ReflectExistingTwistSetting(color, modColorDisplay, config.getString(_macdonaldModOverrideWatcher));
+
+            defectRemoveColorsButtons.add(modColorDisplay);
+            //wait, is this below actually doing... Anything?
+            //watcherButtons.add(modColorDisplay);
+            settingsPanel.addUIElement(modColorDisplay);
+        }
+//END_REGION: Watcher Buttons.
+
     }
 
-    private void ReflectExistingTwistSetting(Color color, ModColorDisplay modColorDisplay)
+    //I believe with these changes, it can handle any color of character required now...
+    private Consumer<ModColorDisplay> getCharModColorDisplayConsumer(List<ModColorDisplay> charRemoveColorsButtons, String charSetting) {
+        Consumer<ModColorDisplay> handleRemoveClick;
+        handleRemoveClick = modColorDisplay -> {
+            charRemoveColorsButtons.forEach(m -> {
+                m.rOutline = Color.BLACK.r;
+                m.gOutline = Color.BLACK.g;
+                m.bOutline = Color.BLACK.b;
+            });
+            String val = config.getString(charSetting);
+
+            if(modColorDisplay.r == _colorPurple.r &&
+                    modColorDisplay.g == _colorPurple.g &&
+                    modColorDisplay.b == _colorPurple.b)
+            {
+                if(val.equals("Purple")) { //IF we already have purple selected, we want to remove our selection and break out
+                    config.setString(charSetting, "NO");
+                    modColorDisplay.rOutline = Color.BLACK.r;
+                    modColorDisplay.gOutline = Color.BLACK.g;
+                    modColorDisplay.bOutline = Color.BLACK.b;
+                    saveConfig();
+                    return;
+                }
+                config.setString(charSetting,"Purple");
+                modColorDisplay.rOutline = Color.WHITE.r;
+                modColorDisplay.gOutline = Color.WHITE.g;
+                modColorDisplay.bOutline = Color.WHITE.b;
+            } else if(modColorDisplay.r == _colorBlue.r &&
+                    modColorDisplay.g == _colorBlue.g &&
+                    modColorDisplay.b == _colorBlue.b)
+            {
+                if(val.equals("Blue")) { //IF we already have Blue selected, we want to remove our selection and break out
+                    config.setString(charSetting, "NO");
+                    modColorDisplay.rOutline = Color.BLACK.r;
+                    modColorDisplay.gOutline = Color.BLACK.g;
+                    modColorDisplay.bOutline = Color.BLACK.b;
+                    saveConfig();
+                    return;
+                }
+                config.setString(charSetting,"Blue");
+
+                modColorDisplay.rOutline = Color.WHITE.r;
+                modColorDisplay.gOutline = Color.WHITE.g;
+                modColorDisplay.bOutline = Color.WHITE.b;
+            } else if(modColorDisplay.r == _colorGreen.r &&
+                    modColorDisplay.g == _colorGreen.g &&
+                    modColorDisplay.b == _colorGreen.b)
+            {
+                if(val.equals("Green")) {
+                    config.setString(charSetting, "NO");
+                    modColorDisplay.rOutline = Color.BLACK.r;
+                    modColorDisplay.gOutline = Color.BLACK.g;
+                    modColorDisplay.bOutline = Color.BLACK.b;
+                    saveConfig();
+                    return;
+                }
+                config.setString(charSetting,"Green");
+
+                modColorDisplay.rOutline = Color.WHITE.r;
+                modColorDisplay.gOutline = Color.WHITE.g;
+                modColorDisplay.bOutline = Color.WHITE.b;
+            }
+        else if(modColorDisplay.r == _colorRed.r &&
+                modColorDisplay.g == _colorRed.g &&
+                modColorDisplay.b == _colorRed.b)
+        {
+            if(val.equals("Red")) {
+                config.setString(charSetting, "NO");
+                modColorDisplay.rOutline = Color.BLACK.r;
+                modColorDisplay.gOutline = Color.BLACK.g;
+                modColorDisplay.bOutline = Color.BLACK.b;
+                saveConfig();
+                return;
+            }
+            config.setString(charSetting,"Red");
+
+            modColorDisplay.rOutline = Color.WHITE.r;
+            modColorDisplay.gOutline = Color.WHITE.g;
+            modColorDisplay.bOutline = Color.WHITE.b;
+        }
+            saveConfig();
+        };
+        return handleRemoveClick;
+    }
+
+    private void ReflectExistingTwistSetting(Color color, ModColorDisplay modColorDisplay, String twistColor)
     {
-        String twistColor = config.getString(MacdonaldModOverrideIronclad);
-        if(twistColor.equals("Blue") && color.r == colorBlue.r && color.g ==colorBlue.g && color.b == colorBlue.b)//values here
+        if(twistColor.equals("Blue") && ColorsEqual(color, _colorBlue))
         {
             modColorDisplay.rOutline = Color.WHITE.r;
             modColorDisplay.gOutline = Color.WHITE.g;
             modColorDisplay.bOutline = Color.WHITE.b;
         }
-        else if(twistColor.equals("Green") && color.r == colorGreen.r && color.g ==colorGreen.g && color.b == colorGreen.b)//values here
+        else if(twistColor.equals("Green") && ColorsEqual(color, _colorGreen))
         {
             modColorDisplay.rOutline = Color.WHITE.r;
             modColorDisplay.gOutline = Color.WHITE.g;
             modColorDisplay.bOutline = Color.WHITE.b;
         }
-        else if(twistColor.equals("Purple") && color.r == colorPurple.r && color.g ==colorPurple.g && color.b == colorPurple.b)//values here
+        else if(twistColor.equals("Purple") && ColorsEqual(color, _colorPurple))
+        {
+            modColorDisplay.rOutline = Color.WHITE.r;
+            modColorDisplay.gOutline = Color.WHITE.g;
+            modColorDisplay.bOutline = Color.WHITE.b;
+        }
+        else if(twistColor.equals("Red") && ColorsEqual(color, _colorRed))
         {
             modColorDisplay.rOutline = Color.WHITE.r;
             modColorDisplay.gOutline = Color.WHITE.g;
@@ -389,6 +556,10 @@ public class LearningMacMod implements
         }
     }
 
+    private Boolean ColorsEqual(Color color1, Color color2)
+    {
+        return (color1.r == color2.r && color1.g == color2.g && color1.b == color2.b);
+    }
 
     private void saveConfig() {
         try {

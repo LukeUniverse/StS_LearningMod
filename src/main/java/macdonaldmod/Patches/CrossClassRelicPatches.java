@@ -7,8 +7,7 @@ import com.megacrit.cardcrawl.actions.utility.ScryAction;
 import com.megacrit.cardcrawl.actions.watcher.ChangeStanceAction;
 import com.megacrit.cardcrawl.cards.blue.BallLightning;
 import com.megacrit.cardcrawl.cards.blue.Recursion;
-import com.megacrit.cardcrawl.cards.green.BouncingFlask;
-import com.megacrit.cardcrawl.cards.green.PoisonedStab;
+import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.purple.Eruption;
 import com.megacrit.cardcrawl.cards.purple.Vigilance;
 import com.megacrit.cardcrawl.cards.red.Bash;
@@ -22,6 +21,7 @@ import com.megacrit.cardcrawl.neow.NeowRoom;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import macdonaldmod.LearningMacMod;
 import macdonaldmod.Orbs.CalmOrb;
+import macdonaldmod.Orbs.HellfireOrb;
 import macdonaldmod.Orbs.WrathOrb;
 import macdonaldmod.relics.*;
 import macdonaldmod.util.CrossCharacterRelicUtility;
@@ -133,59 +133,85 @@ public class CrossClassRelicPatches {
                 throw new RuntimeException(e);
             }
 
-            String var = config.getString(LearningMacMod.MacdonaldModOverrideIronclad);
-            //this DEFINITELY feels weird to be here, and as mentioned on the event, it bares repeating here... this logic should definitely be on the relic itself
-           if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+            if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
            {
+               String var = config.getString(LearningMacMod._macdonaldModOverrideIronclad);
                switch (var) {
                    case "Green": {
-                       //New Relic
                        AbstractRelic infectionRelic = RelicLibrary.getRelic(InfectionMutagen.ID).makeCopy();
-                       //Cards to remove
-                       List<String> cardIDsToRemove = new ArrayList<>();
-                       cardIDsToRemove.add(Bash.ID);
-                       cardIDsToRemove.add(Strike_Red.ID);
-                       //Cards to add
-                       List<AbstractCard> cardsToAdd = new ArrayList<>();
-                       cardsToAdd.add(new BouncingFlask());
-                       cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
-
-                       //Julie do the thing!
-                       CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic, cardIDsToRemove, cardsToAdd);
+                       CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic);
                        break;
                    }
                    case "Blue": {
-                       //New Relic
                        AbstractRelic hellFireRelic = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
-                       //Cards to remove
-                       List<String> cardIDsToRemove = new ArrayList<>();
-                       cardIDsToRemove.add(Bash.ID);
-                       cardIDsToRemove.add(Strike_Red.ID);
-                       //Cards to add
-                       List<AbstractCard> cardsToAdd = new ArrayList<>();
-                       cardsToAdd.add(new Recursion());
-                       cardsToAdd.add(new BallLightning());
-                       //Julie do the thing!
-                       CrossCharacterRelicUtility.ResolveClassMerge(hellFireRelic, cardIDsToRemove, cardsToAdd);
+                       CrossCharacterRelicUtility.ResolveClassMerge(hellFireRelic);
                        break;
                    }
                    case "Purple": {
-                       //New Relic
                        AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
-                       //Cards to remove
-                       List<String> cardIDsToRemove = new ArrayList<>();
-                       cardIDsToRemove.add(Bash.ID);
-                       cardIDsToRemove.add(Defend_Red.ID);
-                       //Cards to add
-                       List<AbstractCard> cardsToAdd = new ArrayList<>();
-                       cardsToAdd.add(new Eruption());
-                       cardsToAdd.add(new Vigilance());
-                       //Julie do the thing!
-                       CrossCharacterRelicUtility.ResolveClassMerge(bloodRedLotus, cardIDsToRemove, cardsToAdd);
+                       CrossCharacterRelicUtility.ResolveClassMerge(bloodRedLotus);
                        break;
                    }
                }
-           }
+           } else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+           {
+               switch (config.getString(LearningMacMod._macdonaldModOverrideSilent)) {
+                   case "Red": {
+                       AbstractRelic infectionRelic = RelicLibrary.getRelic(InfectionMutagen.ID).makeCopy();
+                       CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic);
+                       break;
+                   }
+                   case "Blue": {
+                       AbstractRelic noxiousRelic = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
+                       CrossCharacterRelicUtility.ResolveClassMerge(noxiousRelic);
+                       break;
+                   }
+                   case "Purple": {
+                       AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+                       CrossCharacterRelicUtility.ResolveClassMerge(locket);
+                       break;
+                   }
+               }
+           } else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+            {
+                switch (config.getString(LearningMacMod._macdonaldModOverrideDefect)) {
+                    case "Red": {
+                        AbstractRelic infectionRelic = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
+                        CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic);
+                        break;
+                    }
+                    case "Green": {
+                        AbstractRelic noxiousRelic = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
+                        CrossCharacterRelicUtility.ResolveClassMerge(noxiousRelic);
+                        break;
+                    }
+                    case "Purple": {
+                        AbstractRelic chip = RelicLibrary.getRelic(StanceChip.ID).makeCopy();
+                        CrossCharacterRelicUtility.ResolveClassMerge(chip);
+                        break;
+                    }
+                }
+            }else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+            {
+                switch (config.getString(LearningMacMod._macdonaldModOverrideWatcher)) {
+                    case "Red": {
+                        AbstractRelic infectionRelic = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
+                        CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic);
+                        break;
+                    }
+                    case "Green": {
+                        AbstractRelic noxiousRelic = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+                        CrossCharacterRelicUtility.ResolveClassMerge(noxiousRelic);
+                        break;
+                    }
+                    case "Blue": {
+                        AbstractRelic chip = RelicLibrary.getRelic(StanceChip.ID).makeCopy();
+                        CrossCharacterRelicUtility.ResolveClassMerge(chip);
+                        break;
+                    }
+                }
+            }
+
         }
 
     }

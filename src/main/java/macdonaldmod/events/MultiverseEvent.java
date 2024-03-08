@@ -44,29 +44,30 @@ public class MultiverseEvent extends AbstractImageEvent {
         LEAVING
     }
 
-    private enum TwistColor{
+    private enum TwistColor {
         RED,
         GREEN,
         BLUE,
         PURPLE
     }
+
     TwistColor twistState;
 
     public MultiverseEvent() {
-        super("Multiverse(WIP)", DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[1] + " NL "+DESCRIPTIONS[2], "macdonaldmod/images/1024/events/MultiverseEvent.png");
+        super("Multiverse(WIP)", DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[1] + " NL " + DESCRIPTIONS[2], "macdonaldmod/images/1024/events/MultiverseEvent.png");
 
 
         int current_int = GetClassInt();
 
         int rand_int = current_int;
         //Proceed to loop through this until we have an int that isn't representative of the char we are currently playing.
-        while(rand_int == current_int)
-            rand_int = AbstractDungeon.miscRng.random(0,3);
+        while (rand_int == current_int)
+            rand_int = AbstractDungeon.miscRng.random(0, 3);
 
         //Then set our twist state on offer to the appropriate color.
-        if(rand_int == 0)
+        if (rand_int == 0)
             twistState = TwistColor.RED;
-        else if(rand_int == 1)
+        else if (rand_int == 1)
             twistState = TwistColor.GREEN;
         else if (rand_int == 2)
             twistState = TwistColor.BLUE;
@@ -77,17 +78,16 @@ public class MultiverseEvent extends AbstractImageEvent {
     }
 
 
-    private void SetUp()
-    {
+    private void SetUp() {
 
-        if(twistState == TwistColor.GREEN) {
-            this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[1] + " NL "+DESCRIPTIONS[2]);
-        } else if(twistState == TwistColor.BLUE) {
-            this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[3] + " NL "+DESCRIPTIONS[2]);
-        } else if(twistState == TwistColor.PURPLE) {
-            this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[4] + " NL "+DESCRIPTIONS[2]);
+        if (twistState == TwistColor.GREEN) {
+            this.body = (DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[1] + " NL " + DESCRIPTIONS[2]);
+        } else if (twistState == TwistColor.BLUE) {
+            this.body = (DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[3] + " NL " + DESCRIPTIONS[2]);
+        } else if (twistState == TwistColor.PURPLE) {
+            this.body = (DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[4] + " NL " + DESCRIPTIONS[2]);
         } else if (twistState == TwistColor.RED) { //This one got added late, may want to re-arrange strings. hah
-            this.body = (DESCRIPTIONS[0] +" NL "+DESCRIPTIONS[5] + " NL "+DESCRIPTIONS[2]);
+            this.body = (DESCRIPTIONS[0] + " NL " + DESCRIPTIONS[5] + " NL " + DESCRIPTIONS[2]);
         }
 
 
@@ -96,7 +96,6 @@ public class MultiverseEvent extends AbstractImageEvent {
         this.imageEventText.setDialogOption(OPTIONS[0]); //This adds the option to a list of options
         this.imageEventText.setDialogOption(OPTIONS[1]); //This adds the option to a list of options
     }
-
 
 
     @Override
@@ -110,13 +109,13 @@ public class MultiverseEvent extends AbstractImageEvent {
                         imageEventText.updateBodyText(OPTIONS[2]);
                         AbstractDungeon.getCurrRoom().phase = AbstractRoom.RoomPhase.COMPLETE;
 
-                        if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+                        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
                             IroncladMerge();
-                        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
                             SilentMerge();
-                        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
                             DefectMerge();
-                        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+                        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
                             WatcherMerge();
                         else
                             break;
@@ -147,184 +146,73 @@ public class MultiverseEvent extends AbstractImageEvent {
 
 
     private int GetClassInt() {
-        int classInt =-1;
+        int classInt = -1;
 
-        if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD))
             classInt = 0;
-        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT))
             classInt = 1;
-        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
-            classInt =2;
-        else if(AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
-            classInt =3;
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT))
+            classInt = 2;
+        else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER))
+            classInt = 3;
         return classInt;
     }
 
 
-    //REGION: Character Merges
-    private void IroncladMerge(){
-        if(twistState == TwistColor.GREEN) {
-            //New Relic
+//REGION: Character Merges
+    private void IroncladMerge() {
+        if (twistState == TwistColor.GREEN) {
             AbstractRelic infectionRelic = RelicLibrary.getRelic(InfectionMutagen.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Bash.ID);
-            cardIDsToRemove.add(Strike_Red.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new BouncingFlask());
-            cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
-            //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic,cardIDsToRemove,cardsToAdd);
-        }
-        else if(twistState == TwistColor.BLUE) {
-            //New Relic
+            CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic);
+        } else if (twistState == TwistColor.BLUE) {
             AbstractRelic hellFireRelic = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Bash.ID);
-            cardIDsToRemove.add(Strike_Red.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new Recursion());
-            cardsToAdd.add(new BallLightning());
-            //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(hellFireRelic,cardIDsToRemove,cardsToAdd);
-        }
-        else if(twistState == TwistColor.PURPLE) {
-            //New Relic
+            CrossCharacterRelicUtility.ResolveClassMerge(hellFireRelic);
+        } else if (twistState == TwistColor.PURPLE) {
             AbstractRelic bloodRedLotus = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Bash.ID);
-            cardIDsToRemove.add(Defend_Red.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new Eruption());
-            cardsToAdd.add(new Vigilance());
-            //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(bloodRedLotus,cardIDsToRemove,cardsToAdd);
+            CrossCharacterRelicUtility.ResolveClassMerge(bloodRedLotus);
         }
     }
 
     private void SilentMerge() {
         if (twistState == TwistColor.RED) {
-            //New Relic
             AbstractRelic infectionRelic = RelicLibrary.getRelic(InfectionMutagen.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Defend_Green.ID);
-            cardIDsToRemove.add(Survivor.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new Bash());
-            //cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
-            //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic, cardIDsToRemove, cardsToAdd);
+            CrossCharacterRelicUtility.ResolveClassMerge(infectionRelic);
         } else if (twistState == TwistColor.BLUE) {
-        //New Relic
-        AbstractRelic noxiousRelic = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
-        //Cards to remove
-        List<String> cardIDsToRemove = new ArrayList<>();
-        cardIDsToRemove.add(Defend_Green.ID);
-        cardIDsToRemove.add(Strike_Green.ID); //TODO, decide which cards to remove here
-        //Cards to add
-        List<AbstractCard> cardsToAdd = new ArrayList<>();
-        cardsToAdd.add(new Recursion());
-        cardsToAdd.add(new BallLightning());
-//        //Julie do the thing!
-        CrossCharacterRelicUtility.ResolveClassMerge(noxiousRelic,cardIDsToRemove,cardsToAdd);
-
+            AbstractRelic noxiousRelic = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
+            CrossCharacterRelicUtility.ResolveClassMerge(noxiousRelic);
         } else if (twistState == TwistColor.PURPLE) {
-        //New Relic
-        AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
-        //Cards to remove
-        List<String> cardIDsToRemove = new ArrayList<>();
-        cardIDsToRemove.add(Strike_Green.ID);
-        cardIDsToRemove.add(Defend_Green.ID);
-        //Cards to add
-        List<AbstractCard> cardsToAdd = new ArrayList<>();
-        cardsToAdd.add(new Eruption());
-        cardsToAdd.add(new Vigilance());
-        //Julie do the thing!
-        CrossCharacterRelicUtility.ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
+            AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+            CrossCharacterRelicUtility.ResolveClassMerge(locket);
         }
     }
 
-    private void DefectMerge() //Should I be swapping Duelcast for Recursion here? Or turning Zap into a "Channel 1 [custom] Orb" ?
-    {
+    //Should I be swapping Duelcast for Recursion here? Or turning Zap into a "Channel 1 [custom] Orb" ?
+    private void DefectMerge() {
         if (twistState == TwistColor.RED) {
-            //New Relic
             AbstractRelic hellfire = RelicLibrary.getRelic(HellfireBattery.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Zap.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new Bash());
-            //cardsToAdd.add(new PoisonedStab()); //maybe do a  custom poisoned strike instead?
-            //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(hellfire, cardIDsToRemove, cardsToAdd);
+            CrossCharacterRelicUtility.ResolveClassMerge(hellfire);
         } else if (twistState == TwistColor.GREEN) {
-            //New Relic
             AbstractRelic noxiousBattery = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Zap.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new DeadlyPoison());
-//        //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(noxiousBattery,cardIDsToRemove,cardsToAdd);
-
+            CrossCharacterRelicUtility.ResolveClassMerge(noxiousBattery);
         } else if (twistState == TwistColor.PURPLE) {
-
-            AbstractRelic locket = RelicLibrary.getRelic(CrackedCore.ID).makeCopy();
-            //Cards to remove
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Strike_Blue.ID);
-            cardIDsToRemove.add(Defend_Blue.ID);
-            cardIDsToRemove.add(Zap.ID);
-            //Cards to add
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new Eruption());
-            cardsToAdd.add(new Vigilance());
-            cardsToAdd.add(new FlurryOfBlows());
-            //Julie do the thing!
-            CrossCharacterRelicUtility.ResolveClassMerge(locket,cardIDsToRemove,cardsToAdd);
+            AbstractRelic chip = RelicLibrary.getRelic(StanceChip.ID).makeCopy();
+            CrossCharacterRelicUtility.ResolveClassMerge(chip);
         }
     }
-    private void WatcherMerge()
-    {
+
+    private void WatcherMerge() {
         if (twistState == TwistColor.RED) {
             AbstractRelic blood = RelicLibrary.getRelic(BloodLotus.ID).makeCopy();
-
-            List<String> cardIDsToRemove = new ArrayList<>();
-
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-
-            CrossCharacterRelicUtility.ResolveClassMerge(blood, cardIDsToRemove, cardsToAdd);
+            CrossCharacterRelicUtility.ResolveClassMerge(blood);
         } else if (twistState == TwistColor.GREEN) {
-            AbstractRelic noxiousBattery = RelicLibrary.getRelic(NoxiousBattery.ID).makeCopy();
-            List<String> cardIDsToRemove = new ArrayList<>();
-
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-
-            CrossCharacterRelicUtility.ResolveClassMerge(noxiousBattery,cardIDsToRemove,cardsToAdd);
+            AbstractRelic locket = RelicLibrary.getRelic(LocketOfTheSnake.ID).makeCopy();
+            CrossCharacterRelicUtility.ResolveClassMerge(locket);
         } else if (twistState == TwistColor.BLUE) {
             AbstractRelic chip = RelicLibrary.getRelic(StanceChip.ID).makeCopy();
-
-            List<String> cardIDsToRemove = new ArrayList<>();
-            cardIDsToRemove.add(Strike_Green.ID);
-            cardIDsToRemove.add(Defend_Green.ID);
-
-            List<AbstractCard> cardsToAdd = new ArrayList<>();
-            cardsToAdd.add(new Eruption());
-            cardsToAdd.add(new Vigilance());
-
-            CrossCharacterRelicUtility.ResolveClassMerge(chip,cardIDsToRemove,cardsToAdd);
+            CrossCharacterRelicUtility.ResolveClassMerge(chip);
         }
     }
 
-    //ENDREGION Character Merges
+//ENDREGION Character Merges
 }

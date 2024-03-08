@@ -4,17 +4,23 @@ import com.megacrit.cardcrawl.actions.common.*;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.purple.*;
+import com.megacrit.cardcrawl.cards.red.Bash;
+import com.megacrit.cardcrawl.cards.red.Strike_Red;
 import com.megacrit.cardcrawl.cards.tempCards.Miracle;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.PureWater;
 import com.megacrit.cardcrawl.relics.SnakeRing;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import macdonaldmod.util.CrossCharacterRelicUtility;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static basemod.BaseMod.logger;
 import static macdonaldmod.util.CrossCharacterRelicUtility.GlobalChangeLook;
@@ -160,5 +166,32 @@ public class LocketOfTheSnake extends BaseRelic implements CrossClassRelicInterf
         CrossCharacterRelicUtility.ModifyCardPool(classCards);
     }
 
+    public void ModifyDeck() {
+        //Moving this here, allow me to only have to modify it directly right here
+        List<String> cardIDsToRemove = new ArrayList<>();
+        List<AbstractCard> cardsToAdd = new ArrayList<>();
+        //TODO this def needs changing here, this relic isn't even about stances anymore.
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)) {
+            //Cards to remove
+            cardIDsToRemove.add(Strike_Green.ID);
+            cardIDsToRemove.add(Defend_Green.ID);
+            //Cards to add
+            cardsToAdd.add(new Eruption());
+            cardsToAdd.add(new Vigilance());
+
+
+        } else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER)) {
+            //Cards to Remove
+            cardIDsToRemove.add(Defend_Watcher.ID);
+            //Cards to add
+            cardsToAdd.add(new Survivor());
+        }
+
+        for (String  r : cardIDsToRemove)
+            AbstractDungeon.player.masterDeck.removeCard(r);
+        for (AbstractCard a : cardsToAdd)
+            AbstractDungeon.effectsQueue.add(new ShowCardAndObtainEffect(a, (float) Settings.WIDTH / 2.0F, (float) Settings.HEIGHT / 2.0F));
+
+    }
 
 }

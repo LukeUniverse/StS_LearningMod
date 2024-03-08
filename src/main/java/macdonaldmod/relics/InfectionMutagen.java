@@ -5,10 +5,14 @@ import com.megacrit.cardcrawl.actions.common.RelicAboveCreatureAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
+import com.megacrit.cardcrawl.cards.blue.BallLightning;
+import com.megacrit.cardcrawl.cards.blue.Recursion;
+import com.megacrit.cardcrawl.cards.blue.Zap;
 import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.red.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
@@ -17,9 +21,11 @@ import com.megacrit.cardcrawl.powers.StrengthPower;
 import com.megacrit.cardcrawl.relics.BurningBlood;
 import com.megacrit.cardcrawl.relics.RingOfTheSerpent;
 import com.megacrit.cardcrawl.relics.SnakeRing;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import macdonaldmod.util.CrossCharacterRelicUtility;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static basemod.BaseMod.logger;
 import static macdonaldmod.LearningMacMod.makeID;
@@ -78,7 +84,7 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
             }
         } else if (AbstractDungeon.player.hasRelic(SnakeRing.ID)) {
             for (int i = 0; i < AbstractDungeon.player.relics.size(); ++i) {
-                if (AbstractDungeon.player.relics.get(i).relicId.equals(RingOfTheSerpent.ID)) {
+                if (AbstractDungeon.player.relics.get(i).relicId.equals(SnakeRing.ID)) {
                     instantObtain(AbstractDungeon.player, i, true);
                     break;
                 }
@@ -165,5 +171,31 @@ public class InfectionMutagen extends BaseRelic implements CrossClassRelicInterf
         CrossCharacterRelicUtility.ModifyCardPool(classCards);
     }
 
+    public void ModifyDeck() {
+        //Moving this here, allow me to only have to modify it directly right here
+        List<String> cardIDsToRemove = new ArrayList<>();
+        List<AbstractCard> cardsToAdd = new ArrayList<>();
+
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
+            cardIDsToRemove.add(Bash.ID);
+            cardIDsToRemove.add(Strike_Red.ID);
+            //Cards to add
+            cardsToAdd.add(new BouncingFlask());
+            cardsToAdd.add(new PoisonedStab());
+
+
+        } else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.THE_SILENT)) {
+            cardIDsToRemove.add(Defend_Green.ID);
+            cardIDsToRemove.add(Survivor.ID);
+            //Cards to add
+            cardsToAdd.add(new Bash());
+        }
+
+        for (String  r : cardIDsToRemove)
+            AbstractDungeon.player.masterDeck.removeCard(r);
+        for (AbstractCard a : cardsToAdd)
+            AbstractDungeon.effectsQueue.add(new ShowCardAndObtainEffect(a, (float) Settings.WIDTH / 2.0F, (float) Settings.HEIGHT / 2.0F));
+
+    }
 
 }

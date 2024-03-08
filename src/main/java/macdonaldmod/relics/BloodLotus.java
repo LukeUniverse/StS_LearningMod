@@ -3,17 +3,24 @@ package macdonaldmod.relics;
 import com.megacrit.cardcrawl.actions.common.ApplyPowerAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.green.*;
 import com.megacrit.cardcrawl.cards.purple.*;
+import com.megacrit.cardcrawl.cards.red.Bash;
+import com.megacrit.cardcrawl.cards.red.Defend_Red;
+import com.megacrit.cardcrawl.cards.red.Strike_Red;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.powers.*;
 import com.megacrit.cardcrawl.relics.BurningBlood;
 import com.megacrit.cardcrawl.relics.PureWater;
 import com.megacrit.cardcrawl.stances.AbstractStance;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import macdonaldmod.util.CrossCharacterRelicUtility;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static basemod.BaseMod.logger;
 import static macdonaldmod.LearningMacMod.makeID;
@@ -102,12 +109,9 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
 
     //I feel like I had to include A LOT of common and uncommon, but there are barely any relevant rares...
     public void modifyCardPool() {
-        logger.info("BloodRedLotus acquired, modifying card pool.");
-
         ArrayList<AbstractCard> classCards = new ArrayList<>();
 
         if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
-
 
             //I only want a SUBSET of the PURPLE cards, not all of them, so here we go.
             //Common
@@ -142,4 +146,30 @@ public class BloodLotus extends BaseRelic implements CrossClassRelicInterface {
 
     }
 
+    public void ModifyDeck() {
+        //Moving this here, allow me to only have to modify it directly right here
+        List<String> cardIDsToRemove = new ArrayList<>();
+        List<AbstractCard> cardsToAdd = new ArrayList<>();
+
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
+            //Cards to remove
+            cardIDsToRemove.add(Bash.ID);
+            cardIDsToRemove.add(Defend_Red.ID);
+            //Cards to add
+            cardsToAdd.add(new Eruption());
+            cardsToAdd.add(new Vigilance());
+
+
+        } else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.WATCHER)) {
+            //Cards to remove
+            //Cards to add
+            //Uhhhhhh should probably have stuff here, shouldn't I?
+        }
+
+        for (String  r : cardIDsToRemove)
+            AbstractDungeon.player.masterDeck.removeCard(r);
+        for (AbstractCard a : cardsToAdd)
+            AbstractDungeon.effectsQueue.add(new ShowCardAndObtainEffect(a, (float) Settings.WIDTH / 2.0F, (float) Settings.HEIGHT / 2.0F));
+
+    }
 }

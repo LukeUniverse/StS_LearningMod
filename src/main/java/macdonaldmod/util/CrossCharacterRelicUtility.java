@@ -31,7 +31,7 @@ public class CrossCharacterRelicUtility {
     public static boolean ActuallyChangeStance = false;
 
     //this actually would probably be a good place to also include the card reward changes...
-    public static void ResolveClassMerge(AbstractRelic relicToAdd, List<String> cardsToRemove, List<AbstractCard> cardsToAdd)
+    public static void ResolveClassMerge(AbstractRelic relicToAdd)
     {
         relicToAdd.spawn((float) Settings.WIDTH / 2.0F, (float) Settings.HEIGHT / 2.0F);
         relicToAdd.obtain();
@@ -40,11 +40,14 @@ public class CrossCharacterRelicUtility {
         relicToAdd.isDone = false;
         relicToAdd.flash();
 
-        for (String  r : cardsToRemove)
-            AbstractDungeon.player.masterDeck.removeCard(r);
-        for (AbstractCard a : cardsToAdd)
-            AbstractDungeon.effectsQueue.add(new ShowCardAndObtainEffect(a, (float) Settings.WIDTH / 2.0F, (float) Settings.HEIGHT / 2.0F));
-    }
+
+        //It 100% IS an instance of a cross class relic, but good practice to, you know, double check.
+        if (relicToAdd instanceof CrossClassRelicInterface) {
+            //Moving logic that was previously part of the Event itself, to here. (well, to each relic)
+            ((CrossClassRelicInterface) relicToAdd).ModifyDeck();
+        }
+
+       }
 
     //Methods
     public static void GlobalChangeLook() {

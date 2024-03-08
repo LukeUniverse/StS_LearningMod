@@ -4,17 +4,24 @@ import com.megacrit.cardcrawl.actions.defect.ChannelAction;
 import com.megacrit.cardcrawl.actions.utility.UseCardAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.blue.*;
+import com.megacrit.cardcrawl.cards.green.BouncingFlask;
+import com.megacrit.cardcrawl.cards.green.Defend_Green;
+import com.megacrit.cardcrawl.cards.green.PoisonedStab;
+import com.megacrit.cardcrawl.cards.green.Survivor;
 import com.megacrit.cardcrawl.cards.red.*;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.BurningBlood;
 import com.megacrit.cardcrawl.relics.CrackedCore;
+import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
 import macdonaldmod.Orbs.HellfireOrb;
 import macdonaldmod.util.CrossCharacterRelicUtility;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static basemod.BaseMod.logger;
 import static macdonaldmod.LearningMacMod.makeID;
@@ -143,6 +150,34 @@ public class HellfireBattery extends BaseRelic implements CrossClassRelicInterfa
             classCards.add(CardLibrary.getCard(LimitBreak.ID));
         }
         CrossCharacterRelicUtility.ModifyCardPool(classCards);
+
+    }
+
+    public void ModifyDeck() {
+        //Moving this here, allow me to only have to modify it directly right here
+        List<String> cardIDsToRemove = new ArrayList<>();
+        List<AbstractCard> cardsToAdd = new ArrayList<>();
+
+        if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.IRONCLAD)) {
+            //Cards to remove
+            cardIDsToRemove.add(Bash.ID);
+            cardIDsToRemove.add(Strike_Red.ID);
+            //Cards to add
+            cardsToAdd.add(new Recursion());
+            cardsToAdd.add(new BallLightning());
+
+        } else if (AbstractDungeon.player.chosenClass.equals(AbstractPlayer.PlayerClass.DEFECT)) {
+            //Cards to remove
+            cardIDsToRemove.add(Zap.ID);
+            //Cards to add
+            cardsToAdd.add(new Bash());
+            //Julie do the thing!
+        }
+
+        for (String  r : cardIDsToRemove)
+            AbstractDungeon.player.masterDeck.removeCard(r);
+        for (AbstractCard a : cardsToAdd)
+            AbstractDungeon.effectsQueue.add(new ShowCardAndObtainEffect(a, (float) Settings.WIDTH / 2.0F, (float) Settings.HEIGHT / 2.0F));
 
     }
 
